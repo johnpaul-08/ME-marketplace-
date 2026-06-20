@@ -22,7 +22,7 @@ const SplashScreen = () => {
             stiffness: 100 
           }}
         >
-          <Logo className="splash-logo" />
+          <Logo className="splash-logo" isSplash={true} />
         </motion.div>
         
         <motion.div 

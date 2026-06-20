@@ -1,6 +1,6 @@
 import React from "react";
 
-const Logo = ({ className }) => {
+const Logo = ({ className, isSplash }) => {
   return (
     <div
       className={className}
@@ -11,7 +11,7 @@ const Logo = ({ className }) => {
       }}
     >
       <img
-        src="/logo.svg"
+        src={isSplash ? "/brand/logo.gif" : "/brand/logo.jpeg"}
         alt="Logo"
         className="logo"
         width={60}
