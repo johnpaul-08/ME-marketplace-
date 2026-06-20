@@ -50,7 +50,7 @@
 }
 
 .remove-btn {
-  color: #ff4757;
+  color: var(--me-orange);
 }
 
 .cart-summary {
@@ -82,13 +82,21 @@
 
 .checkout-btn {
   width: 100%;
-  background: var(--text-primary);
-  color: var(--bg-primary);
+  background: var(--gradient-cta);
+  color: #ffffff;
   padding: 15px;
   border-radius: 8px;
   margin-top: 30px;
   font-weight: 700;
   font-size: 1rem;
+  box-shadow: 0 4px 16px rgba(255, 118, 18, 0.3);
+  transition: var(--transition);
+}
+
+.checkout-btn:hover {
+  background: linear-gradient(135deg, #e45a00, #c94d00);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 118, 18, 0.4);
 }
 
 @media (max-width: 992px) {

@@ -5,14 +5,14 @@ import { motion } from 'framer-motion';
 import '../styles/HomeScreen.css';
 
 const MOCK_PRODUCTS = [
-  { id: 1, name: "Lunar Glow Serum", category: "Skincare", price: 45, oldPrice: 60, rating: 5, discount: 25 },
-  { id: 2, name: "Moonlight Mask", category: "Wellness", price: 32, rating: 4 },
-  { id: 3, name: "Stardust Exfoliator", category: "Skincare", price: 28, oldPrice: 35, rating: 5, discount: 20 },
-  { id: 4, name: "Midnight Recovery Oil", category: "Skincare", price: 55, rating: 4 },
-  { id: 5, name: "Celestial Eye Cream", category: "Skincare", price: 38, rating: 5 },
-  { id: 6, name: "Eclipse Cleansing Gel", category: "Wellness", price: 22, rating: 4 },
-  { id: 7, name: "Nebula Night Cream", category: "Skincare", price: 48, rating: 5 },
-  { id: 8, name: "Galaxy Body Butter", category: "Body Care", price: 25, rating: 4 },
+  { id: 1, name: "Mindful Journal", category: "Wellness", price: 450, oldPrice: 600, rating: 5, discount: 25 },
+  { id: 2, name: "Empowerment Tote Bag", category: "Accessories", price: 320, rating: 4 },
+  { id: 3, name: "Self-Care Kit", category: "Wellness", price: 280, oldPrice: 350, rating: 5, discount: 20 },
+  { id: 4, name: "Mental Health Planner", category: "Stationery", price: 550, rating: 4 },
+  { id: 5, name: "Resilience Bracelet", category: "Accessories", price: 380, rating: 5 },
+  { id: 6, name: "Calm & Focus Tea", category: "Wellness", price: 220, rating: 4 },
+  { id: 7, name: "ME Community Hoodie", category: "Apparel", price: 1200, rating: 5 },
+  { id: 8, name: "Affirmation Cards Set", category: "Stationery", price: 250, rating: 4 },
 ];
 
 const HomeScreen = () => {
@@ -66,8 +66,8 @@ const HomeScreen = () => {
       <section className="section promo-banner">
         <div className="container">
           <div className="banner-content">
-            <h3>Join the Moon Club</h3>
-            <p>Get 15% off your first order and exclusive access to new launches.</p>
+            <h3>Join the ME Community</h3>
+            <p>Subscribe to get updates on new products, exclusive launches, and how your purchases are making an impact.</p>
             <div className="newsletter-form">
               <input type="email" placeholder="Enter your email" />
               <button>Subscribe</button>
@@ -80,3 +80,4 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
+

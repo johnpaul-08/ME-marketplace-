@@ -1,25 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
 
 :root {
+  /* Mind Empowerment Brand Colors */
+  --me-maroon: #461711;         /* Primary brand — dark maroon */
+  --me-orange: #ff7612;         /* Accent — bright orange */
+  --me-orange-deep: #e45a00;    /* Deep orange for gradients */
+  --me-navy: #0a2e5c;           /* Secondary — navy blue */
+  --me-cream: #FAF6F1;          /* Warm cream background */
+  --me-cream-border: #E0D4C4;   /* Soft cream border */
+  --me-brown-soft: #7A6A5A;     /* Muted earthy text */
+
   --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --text-primary: #121212;
-  --text-secondary: #555555;
-  --accent: #D4AF37; /* Moon Gold */
-  --accent-soft: rgba(212, 175, 55, 0.1);
-  --border: #e0e0e0;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --bg-secondary: #f9fafb;
+  --text-primary: #461711;      /* Maroon as primary text (ME brand) */
+  --text-secondary: #7A6A5A;    /* Earthy muted secondary */
+  --accent: #ff7612;            /* Bright orange accent */
+  --accent-hover: #e45a00;      /* Deeper orange on hover */
+  --accent-soft: rgba(255, 118, 18, 0.1);  /* Soft orange tint */
+  --border: #E0D4C4;
+  --shadow: 0 4px 24px rgba(70, 23, 17, 0.08);
+  --shadow-hover: 0 8px 32px rgba(70, 23, 17, 0.18);
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --header-height: 80px;
+
+  /* Gradients */
+  --gradient-cta: linear-gradient(135deg, #ff7612, #e45a00);
+  --gradient-hero: radial-gradient(circle at top right, rgba(255, 118, 18, 0.12), #ffffff);
 }
 
 [data-theme='dark'] {
-  --bg-primary: #121212;
-  --bg-secondary: #1a1a1a;
-  --text-primary: #f5f5f5;
-  --text-secondary: #aaaaaa;
-  --border: #333333;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  --bg-primary: #1a0f0d;
+  --bg-secondary: #231510;
+  --text-primary: #f5ede8;
+  --text-secondary: #b89888;
+  --border: #3d2218;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.7);
+  --accent-soft: rgba(255, 118, 18, 0.15);
 }
 
 * {

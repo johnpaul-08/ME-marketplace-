@@ -2,7 +2,7 @@
   height: 100vh;
   display: flex;
   align-items: center;
-  background: radial-gradient(circle at top right, var(--accent-soft), var(--bg-primary));
+  background: var(--gradient-hero);
   padding-top: var(--header-height);
 }
 
@@ -17,11 +17,11 @@
   font-size: 5rem;
   line-height: 1.1;
   margin-bottom: 20px;
-  color: #461711
+  color: var(--me-maroon);
 }
 
 .accent-text {
-   background: linear-gradient(to right, #ffdb5b, #ff7612 );
+  background: linear-gradient(to right, #ffdb5b, #ff7612);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -38,38 +38,43 @@
 .hero-btns {
   display: flex;
   gap: 20px;
-  color: #ff7612;
 }
 
 .primary-btn {
-  background: #461711;
-  color: var(--bg-primary);
+  background: var(--gradient-cta);
+  color: #ffffff;
   padding: 15px 40px;
-  border-radius: 5px;
-  font-weight: 600;
+  border-radius: 6px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
+  box-shadow: 0 4px 16px rgba(255, 118, 18, 0.35);
+  transition: var(--transition);
 }
 
 .primary-btn:hover {
-  background: #ff7612;
+  background: linear-gradient(135deg, #e45a00, #c94d00);
   transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(255, 118, 18, 0.45);
 }
 
 .secondary-btn {
-  border: 2px solid #461711 ;
+  border: 2px solid var(--me-maroon);
+  color: var(--me-maroon);
   padding: 15px 40px;
-  border-radius: 5px;
-  font-weight: 600;
+  border-radius: 6px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
+  transition: var(--transition);
 }
 
 .secondary-btn:hover {
-  background: #ff7612;
-  border-color: #ff7612;
-  color: #f4edec;
+  background: var(--me-maroon);
+  border-color: var(--me-maroon);
+  color: #ffffff;
   transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(70, 23, 17, 0.25);
 }
 
 .hero-image-container {
@@ -77,7 +82,8 @@
   height: 500px;
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-hover);
+  border: 2px solid var(--me-cream-border);
 }
 
 .placeholder-image img {

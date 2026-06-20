@@ -21,8 +21,8 @@ const SignupScreen = ({ onSignup }) => {
     <div className="auth-container" style={{ flexDirection: 'column' }}>
       <BackButton />
       <div className="auth-card">
-        <h2>Join La Luna</h2>
-        <p>Create an account to start your journey</p>
+        <h2>Join ME Marketplace</h2>
+        <p>Create an account and shop with purpose</p>
         
         <form onSubmit={handleSubmit}>
           <div className="input-group">

@@ -11,7 +11,7 @@ const ContactScreen = () => {
         <div className="contact-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '60px' }}>
           <div className="contact-info-side">
             <p style={{ marginBottom: '40px', fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
-              Have questions about your order or our products? Our team is here to help you glow.
+              Have questions about an order or want to know more about Mind Empowerment's mission? Our team is here to help.
             </p>
             
             <div className="contact-details" style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
@@ -19,21 +19,21 @@ const ContactScreen = () => {
                 <Mail color="var(--accent)" />
                 <div>
                   <h4 style={{ marginBottom: '5px' }}>Email Us</h4>
-                  <p>support@laluna.com</p>
+                  <p>hello@mind-empowered.org</p>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '20px' }}>
                 <Phone color="var(--accent)" />
                 <div>
                   <h4 style={{ marginBottom: '5px' }}>Call Us</h4>
-                  <p>+1 (555) 000-MOON</p>
+                  <p>+91 98765 43210</p>
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '20px' }}>
                 <MapPin color="var(--accent)" />
                 <div>
                   <h4 style={{ marginBottom: '5px' }}>Visit Us</h4>
-                  <p>Lunar Station One, Orbit</p>
+                  <p>India</p>
                 </div>
               </div>
             </div>

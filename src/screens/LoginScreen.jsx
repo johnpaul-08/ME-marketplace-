@@ -19,7 +19,7 @@ const LoginScreen = ({ onLogin }) => {
       <BackButton />
       <div className="auth-card">
         <h2>Welcome Back</h2>
-        <p>Login to your La Luna account</p>
+        <p>Login to your ME Marketplace account</p>
         
         <form onSubmit={handleSubmit}>
           <div className="input-group">

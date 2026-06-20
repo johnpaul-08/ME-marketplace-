@@ -24,51 +24,51 @@ const Footer = () => {
         <div className="footer-grid">
           <div className="footer-info">
             <Logo className="footer-logo" />
-            <p className="footer-desc">Premium quality dropshipping essentials. We bring the best of global wellness and skincare to your doorstep with elegance and care.</p>
+            <p className="footer-desc">Shop with purpose. Every purchase from the ME Marketplace directly supports Mind Empowerment's mission of youth empowerment and mental health awareness in India.</p>
             <div className="social-links">
-              <a href="#"><FacebookIcon size={20} /></a>
-              <a href="#"><InstagramIcon size={20} /></a>
-              <a href="#"><TwitterIcon size={20} /></a>
+              <a href="https://www.facebook.com/mindempowered" target="_blank" rel="noopener noreferrer"><FacebookIcon size={20} /></a>
+              <a href="https://www.instagram.com/mind.empowered" target="_blank" rel="noopener noreferrer"><InstagramIcon size={20} /></a>
+              <a href="https://twitter.com/mindempowered" target="_blank" rel="noopener noreferrer"><TwitterIcon size={20} /></a>
             </div>
           </div>
           
           <div className="footer-links">
             <h4>Quick Links</h4>
             <ul>
-              <li><Link to="/categories">Categories</Link></li>
+              <li><Link to="/categories">Communities</Link></li>
               <li><Link to="/best-sellers">Best Sellers</Link></li>
-              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/about">About ME</Link></li>
               <li><Link to="/contact">Contact Us</Link></li>
             </ul>
           </div>
           
           <div className="footer-links">
-            <h4>Customer Care</h4>
+            <h4>Support</h4>
             <ul>
               <li><Link to="/track-order">Track Order</Link></li>
               <li><Link to="/contact">Shipping Policy</Link></li>
               <li><Link to="/contact">Refund Policy</Link></li>
-              <li><Link to="/contact">Contact Us</Link></li>
+              <li><a href="https://mind-empowered.org" target="_blank" rel="noopener noreferrer">Visit mind-empowered.org</a></li>
             </ul>
           </div>
           
           <div className="footer-contact">
             <h4>Get in Touch</h4>
             <ul>
-              <li><Mail size={16} /> hello@laluna.com</li>
-              <li><Phone size={16} /> +1 (555) 000-MOON</li>
-              <li><MapPin size={16} /> Lunar Station One, Orbit</li>
+              <li><Mail size={16} /> hello@mind-empowered.org</li>
+              <li><Phone size={16} /> +91 98765 43210</li>
+              <li><MapPin size={16} /> India</li>
             </ul>
           </div>
         </div>
         
         <div className="footer-bottom">
-          <p>&copy; 2026 La Luna. All rights reserved. Designed for the stars.</p>
+          <p>&copy; 2026 Mind Empowerment. All rights reserved. Illuminating minds. Transforming lives.</p>
           <div className="payment-icons">
             {/* Mock payment icons */}
             <span className="payment-mock">Visa</span>
             <span className="payment-mock">Mastercard</span>
-            <span className="payment-mock">PayPal</span>
+            <span className="payment-mock">UPI</span>
           </div>
         </div>
       </div>
@@ -77,3 +77,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

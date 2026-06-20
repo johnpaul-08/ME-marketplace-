@@ -27,7 +27,7 @@ const Logo = ({ className }) => {
           color: "#461711",
         }}
       >
-        ME SHOP
+        ME Marketplace
       </span>
     </div>
   );
