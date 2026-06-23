@@ -1,9 +1,23 @@
-import React from 'react';
+import React,{ useState, useEffect } from 'react';
 import { User, Package, MapPin, Settings, LogOut } from 'lucide-react';
 import BackButton from '../components/BackButton';
 import '../styles/Account.css';
+import { supabase } from '../supabase';
 
 const AccountScreen = ({ onLogout }) => {
+
+  const [user, setUser]=useState(null);
+
+  useEffect(()=>{
+    const getUser=async ()=>{
+      const{
+        data :{user}
+      }=await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
+  }, []);
+
   return (
     <div className="section account-page" style={{ paddingTop: '120px' }}>
       <div className="container">
@@ -11,10 +25,10 @@ const AccountScreen = ({ onLogout }) => {
         <div className="account-layout">
           <aside className="account-sidebar">
             <div className="user-profile-header">
-              <div className="avatar-placeholder">J</div>
+              <div className="avatar-placeholder">{user?.user_metadata?.full_name?.charAt(0).toUpperCase() || 'U'}</div>
               <div>
-                <h3>Jane Doe</h3>
-                <p>jane.doe@example.com</p>
+                <h3>{user?.user_metadata?.full_name||'user'}</h3>
+                <p>{user?.email}</p>
               </div>
             </div>
             
@@ -45,7 +59,7 @@ const AccountScreen = ({ onLogout }) => {
                 </div>
               </div>
               
-              <p className="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Your order history will appear here.</p>
+              <p className="lorem">Your order history will appear here.</p>
             </div>
           </main>
         </div>
