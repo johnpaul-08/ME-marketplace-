@@ -55,8 +55,8 @@ const ProductDetailScreen = () => {
             <h1>{product.name}</h1>
             <MoonRating rating={product.rating} count={1240} />
             <div className="price-tag">
-              <span className="current-price">${product.price}</span>
-              {product.oldPrice && <span className="old-price" style={{ marginLeft: '15px', textDecoration: 'line-through', color: '#999', fontSize: '1.5rem' }}>${product.oldPrice}</span>}
+              <span className="current-price">₹{product.price}</span>
+              {product.oldPrice && <span className="old-price" style={{ marginLeft: '15px', textDecoration: 'line-through', color: '#999', fontSize: '1.5rem' }}>₹{product.oldPrice}</span>}
             </div>
             
             <p className="description">

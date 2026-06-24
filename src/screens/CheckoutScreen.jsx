@@ -44,13 +44,13 @@ const CheckoutScreen = () => {
               <div className="mini-img"></div>
               <div className="mini-info">
                 <span>Lunar Glow Serum</span>
-                <span>$45.00</span>
+                <span>₹45.00</span>
               </div>
             </div>
             <div className="summary-details">
-              <div className="row"><span>Subtotal</span> <span>$45.00</span></div>
+              <div className="row"><span>Subtotal</span> <span>₹45.00</span></div>
               <div className="row"><span>Shipping</span> <span>FREE</span></div>
-              <div className="row total"><span>Total</span> <span>$45.00</span></div>
+              <div className="row total"><span>Total</span> <span>₹45.00</span></div>
             </div>
           </div>
         </div>

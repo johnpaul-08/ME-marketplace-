@@ -43,6 +43,15 @@
   font-weight: 700;
 }
 
+.badge-out-of-stock {
+  background: #6b7280;
+}
+
+.out-of-stock-card {
+  opacity: 0.75;
+  filter: saturate(0.4);
+}
+
 .add-to-cart-overlay {
   position: absolute;
   bottom: -50px;

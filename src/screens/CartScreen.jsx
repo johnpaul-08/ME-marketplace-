@@ -38,14 +38,14 @@ const CartScreen = () => {
                 <div className="item-details">
                   <h3>{item.name}</h3>
                   <p>{item.category}</p>
-                  <div className="item-price">${item.price}</div>
+                  <div className="item-price">₹{item.price}</div>
                 </div>
                 <div className="item-quantity">
                   <button onClick={() => updateQuantity(item.id, -1)}><Minus size={16} /></button>
                   <span>{item.quantity}</span>
                   <button onClick={() => updateQuantity(item.id, 1)}><Plus size={16} /></button>
                 </div>
-                <div className="item-total">${(item.price * item.quantity).toFixed(2)}</div>
+                <div className="item-total">₹{(item.price * item.quantity).toFixed(2)}</div>
                 <button className="remove-btn" onClick={() => removeFromCart(item.id)}><Trash2 size={18} /></button>
               </div>
             ))}
@@ -55,7 +55,7 @@ const CartScreen = () => {
             <h3>Order Summary</h3>
             <div className="summary-row">
               <span>Subtotal</span>
-              <span>${cartTotal.toFixed(2)}</span>
+              <span>₹{cartTotal.toFixed(2)}</span>
             </div>
             <div className="summary-row">
               <span>Shipping</span>
@@ -63,7 +63,7 @@ const CartScreen = () => {
             </div>
             <div className="summary-row total">
               <span>Total</span>
-              <span>${cartTotal.toFixed(2)}</span>
+              <span>₹{cartTotal.toFixed(2)}</span>
             </div>
             <Link to="/checkout" className="checkout-btn" style={{ display: 'block', textAlign: 'center' }}>
               Proceed to Checkout

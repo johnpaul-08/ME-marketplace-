@@ -9,25 +9,34 @@ const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
+  const isOutOfStock = product.stock === 0 || product.stock_quantity === 0 || product.in_stock === false;
+
   const handleBuyNow = (e) => {
     e.preventDefault();
+    if (isOutOfStock) return;
     addToCart(product);
     navigate('/checkout');
   };
 
   const handleAddToCart = (e) => {
     e.preventDefault();
+    if (isOutOfStock) return;
     addToCart(product);
   };
 
   return (
-    <div className="product-card">
+    <div className={`product-card${isOutOfStock ? ' out-of-stock-card' : ''}`}>
       <Link to={`/product/${product.id}`} className="product-image">
         <img src={product.images?.[0] || 'https://placehold.co/300x400'} alt={product.name} />
-        {product.discount && <span className="badge">-{product.discount}%</span>}
-        <button className="add-to-cart-overlay" onClick={handleAddToCart}>
-          <ShoppingCart size={18} /> Add to Cart
-        </button>
+        {isOutOfStock
+          ? <span className="badge badge-out-of-stock">Out of Stock</span>
+          : product.discount && <span className="badge">-{product.discount}%</span>
+        }
+        {!isOutOfStock && (
+          <button className="add-to-cart-overlay" onClick={handleAddToCart}>
+            <ShoppingCart size={18} /> Add to Cart
+          </button>
+        )}
       </Link>
       
       <div className="product-info">
@@ -37,10 +46,17 @@ const ProductCard = ({ product }) => {
           <p className="product-category">{product.category}</p>
         </Link>
         <div className="product-price">
-          <span className="current-price">${product.price}</span>
-          {product.oldPrice && <span className="old-price">${product.oldPrice}</span>}
+          <span className="current-price">₹{product.price}</span>
+          {product.oldPrice && <span className="old-price">₹{product.oldPrice}</span>}
         </div>
-        <button className="buy-now-btn" onClick={handleBuyNow}>Buy Now</button>
+        <button
+          className="buy-now-btn"
+          onClick={handleBuyNow}
+          disabled={isOutOfStock}
+          style={isOutOfStock ? { opacity: 0.45, cursor: 'not-allowed' } : {}}
+        >
+          {isOutOfStock ? 'Unavailable' : 'Buy Now'}
+        </button>
       </div>
     </div>
   );
