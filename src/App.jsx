@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { supabase } from './supabase';
 import SplashScreen from './components/SplashScreen';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -24,7 +25,7 @@ import SearchResultsScreen from './screens/SearchResultsScreen';
 import './index.css';
 
 // Component to handle navigation after splash screen
-const AppContent = ({ isLoggedIn, handleLogin, handleSignup, handleLogout }) => {
+const AppContent = ({ isLoggedIn, user, handleLogin, handleSignup, handleLogout }) => {
   const navigate = useNavigate();
   const [hasRedirected, setHasRedirected] = useState(false);
 
@@ -48,27 +49,27 @@ const AppContent = ({ isLoggedIn, handleLogin, handleSignup, handleLogout }) => 
           <Route path="/search" element={<SearchResultsScreen />} />
           <Route path="/product/:id" element={<ProductDetailScreen />} />
           <Route path="/cart" element={<CartScreen />} />
-          <Route path="/checkout" element={<CheckoutScreen />} />
+          <Route path="/checkout" element={<CheckoutScreen user={user} />} />
           <Route path="/order-success" element={<OrderSuccessScreen />} />
           <Route path="/wishlist" element={<WishlistScreen />} />
           <Route path="/contact" element={<ContactScreen />} />
           <Route path="/about" element={<AboutScreen />} />
-          
-          <Route 
-            path="/login" 
-            element={isLoggedIn ? <Navigate to="/account" /> : <LoginScreen onLogin={handleLogin} />} 
+
+          <Route
+            path="/login"
+            element={isLoggedIn ? <Navigate to="/account" /> : <LoginScreen onLogin={handleLogin} />}
           />
-          <Route 
-            path="/forgot-password" 
-            element={<ForgotPasswordScreen />} 
+          <Route
+            path="/forgot-password"
+            element={<ForgotPasswordScreen />}
           />
-          <Route 
-            path="/signup" 
-            element={isLoggedIn ? <Navigate to="/account" /> : <SignupScreen onSignup={handleSignup} />} 
+          <Route
+            path="/signup"
+            element={isLoggedIn ? <Navigate to="/account" /> : <SignupScreen onSignup={handleSignup} />}
           />
-          <Route 
-            path="/account" 
-            element={isLoggedIn ? <AccountScreen onLogout={handleLogout} /> : <Navigate to="/login" />} 
+          <Route
+            path="/account"
+            element={isLoggedIn ? <AccountScreen user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
           />
         </Routes>
       </main>
@@ -80,6 +81,7 @@ const AppContent = ({ isLoggedIn, handleLogin, handleSignup, handleLogout }) => 
 function App() {
   const [loading, setLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -88,16 +90,33 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Keep user state in sync with Supabase auth
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUser(session.user);
+        setIsLoggedIn(true);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setIsLoggedIn(!!session?.user);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleLogin = () => {
-    setIsLoggedIn(true);
+    // session update is handled by onAuthStateChange
   };
 
   const handleSignup = () => {
-    setIsLoggedIn(true);
+    // session update is handled by onAuthStateChange
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
   };
 
   return (
@@ -106,11 +125,12 @@ function App() {
         {loading ? (
           <SplashScreen key="splash" />
         ) : (
-          <AppContent 
-            isLoggedIn={isLoggedIn} 
-            handleLogin={handleLogin} 
-            handleSignup={handleSignup} 
-            handleLogout={handleLogout} 
+          <AppContent
+            isLoggedIn={isLoggedIn}
+            user={user}
+            handleLogin={handleLogin}
+            handleSignup={handleSignup}
+            handleLogout={handleLogout}
           />
         )}
       </AnimatePresence>

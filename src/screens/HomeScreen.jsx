@@ -61,16 +61,18 @@ const HomeScreen = () => {
           </div>
           
           <div className="products-grid">
-            {products.map((product, i) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: i * 0.05 }}
-              >
-                <ProductCard product={product} />
-              </motion.div>
-            ))}
+            {products
+              .filter(p => p.stock !== 0 && p.stock_quantity !== 0 && p.in_stock !== false)
+              .map((product, i) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
+              ))}
           </div>
         </div>
       </section>

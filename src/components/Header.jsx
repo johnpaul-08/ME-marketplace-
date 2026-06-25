@@ -46,14 +46,14 @@ const Header = ({ isLoggedIn = false }) => {
         <div className="header-actions">
           <form className="search-bar" onSubmit={handleSearch}>
             <Search size={20} />
-            <input 
-              type="text" 
-              placeholder="Search products..." 
+            <input
+              type="text"
+              placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </form>
-          
+
           {isLoggedIn ? (
             <Link to="/account" className="icon-btn profile-btn"><User size={22} /></Link>
           ) : (

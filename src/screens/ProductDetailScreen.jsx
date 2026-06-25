@@ -14,7 +14,12 @@ const ProductDetailScreen = () => {
   const { addToCart } = useCart();
   const [product, setProduct]= useState(null);
   
-  useEffect(()=>{fetchProduct();},[id]);
+  useEffect(() => {
+    fetchProduct();
+    if (id) {
+      recordProductView(id);
+    }
+  }, [id]);
 
   async function fetchProduct(){
     const { data, error } = await supabase
@@ -30,6 +35,21 @@ const ProductDetailScreen = () => {
       }
       setProduct(data);
   }
+
+  // record product view (user count)
+  const recordProductView = async (productId) => {
+    try {
+      const { error } = await supabase.rpc('increment_view', { 
+        row_id: productId 
+      });
+
+      if (error) {
+        console.error("Error recording view:", error);
+      }
+    } catch (err) {
+      console.error("Unexpected error recording view:", err);
+    }
+  };
 
   const handleAddToCart = () => {
     addToCart(product);
@@ -55,8 +75,8 @@ const ProductDetailScreen = () => {
             <h1>{product.name}</h1>
             <MoonRating rating={product.rating} count={1240} />
             <div className="price-tag">
-              <span className="current-price">${product.price}</span>
-              {product.oldPrice && <span className="old-price" style={{ marginLeft: '15px', textDecoration: 'line-through', color: '#999', fontSize: '1.5rem' }}>${product.oldPrice}</span>}
+              <span className="current-price">₹{product.price}</span>
+              {product.oldPrice && <span className="old-price" style={{ marginLeft: '15px', textDecoration: 'line-through', color: '#999', fontSize: '1.5rem' }}>₹{product.oldPrice}</span>}
             </div>
             
             <p className="description">

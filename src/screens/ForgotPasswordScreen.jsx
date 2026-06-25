@@ -23,12 +23,12 @@ const ForgotPasswordScreen = () => {
             <form onSubmit={handleSubmit}>
               <div className="input-group">
                 <Mail size={18} />
-                <input 
-                  type="email" 
-                  placeholder="Email Address" 
+                <input
+                  type="email"
+                  placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required 
+                  required
                 />
               </div>
               <button type="submit" className="auth-btn">

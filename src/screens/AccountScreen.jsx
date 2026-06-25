@@ -1,37 +1,71 @@
-import React,{ useState, useEffect } from 'react';
-import { User, Package, MapPin, Settings, LogOut } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Package, MapPin, Settings, LogOut, ShoppingBag, CreditCard, Truck } from 'lucide-react';
 import BackButton from '../components/BackButton';
-import '../styles/Account.css';
 import { supabase } from '../supabase';
+import '../styles/Account.css';
 
-const AccountScreen = ({ onLogout }) => {
+const AccountScreen = ({ user, onLogout }) => {
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
-  const [user, setUser]=useState(null);
+  // Derive display name: prefer full_name from metadata, fall back to email prefix
+  const displayName =
+    user?.user_metadata?.full_name ||
+    user?.user_metadata?.name ||
+    user?.email?.split('@')[0] ||
+    'User';
 
-  useEffect(()=>{
-    const getUser=async ()=>{
-      const{
-        data :{user}
-      }=await supabase.auth.getUser();
-      setUser(user);
+  const avatarLetter = displayName.charAt(0).toUpperCase();
+  const email = user?.email || '';
+
+  useEffect(() => {
+    if (!email) return;
+
+    const fetchOrders = async () => {
+      setLoadingOrders(true);
+      const { data, error } = await supabase
+        .schema('marketplace_dataspace')
+        .from('orders')
+        .select('*')
+        .eq('customer_email', email)
+        .order('created_at', { ascending: false });
+
+      if (!error && data) {
+        setOrders(data);
+      }
+      setLoadingOrders(false);
     };
-    getUser();
-  }, []);
+
+    fetchOrders();
+  }, [email]);
+
+  const getStatusBadge = (status) => {
+    if (!status) return null;
+    const s = status.toLowerCase();
+    let cls = 'status ';
+    if (s === 'delivered') cls += 'delivered';
+    else if (s === 'shipped') cls += 'shipped';
+    else if (s === 'processing' || s === 'pending') cls += 'processing';
+    else cls += 'processing';
+    return <span className={cls}>{status}</span>;
+  };
 
   return (
     <div className="section account-page" style={{ paddingTop: '120px' }}>
       <div className="container">
         <BackButton />
         <div className="account-layout">
+
+          {/* Sidebar */}
           <aside className="account-sidebar">
             <div className="user-profile-header">
-              <div className="avatar-placeholder">{user?.user_metadata?.full_name?.charAt(0).toUpperCase() || 'U'}</div>
+              <div className="avatar-placeholder">{avatarLetter}</div>
               <div>
-                <h3>{user?.user_metadata?.full_name||'user'}</h3>
-                <p>{user?.email}</p>
+                <h3>{displayName}</h3>
+                <p>{email}</p>
               </div>
             </div>
-            
+
             <nav className="account-nav">
               <button className="active"><Package size={18} /> My Orders</button>
               <button><MapPin size={18} /> Addresses</button>
@@ -39,28 +73,96 @@ const AccountScreen = ({ onLogout }) => {
               <button className="logout-btn" onClick={onLogout}><LogOut size={18} /> Logout</button>
             </nav>
           </aside>
-          
+
+          {/* Main content */}
           <main className="account-content">
             <h2>My Orders</h2>
-            <div className="orders-list">
-              <div className="order-item">
-                <div className="order-header">
-                  <span>Order #LL-9482</span>
-                  <span className="status delivered">Delivered</span>
-                </div>
-                <div className="order-body">
-                  <div className="order-img"></div>
-                  <div className="order-info">
-                    <h4>Lunar Glow Serum</h4>
-                    <p>Quantity: 1</p>
-                    <p className="price">$45.00</p>
-                  </div>
-                  <button className="track-btn">Track Order</button>
-                </div>
+
+            {loadingOrders ? (
+              <p className="orders-loading">Loading your orders…</p>
+            ) : orders.length === 0 ? (
+              <div className="orders-empty">
+                <ShoppingBag size={48} strokeWidth={1.2} />
+                <h3>No orders yet</h3>
+                <p>When you place an order, it will appear here.</p>
               </div>
-              
-              <p className="lorem">Your order history will appear here.</p>
-            </div>
+            ) : (
+              <div className="orders-list">
+                {orders.map((order) => {
+                  const items = Array.isArray(order.items) ? order.items : [];
+                  const shortId = order.id?.toString().slice(-8).toUpperCase();
+
+                  return (
+                    <div className="order-item" key={order.id}>
+                      {/* Order Header */}
+                      <div className="order-header">
+                        <div className="order-header-left">
+                          <span className="order-id">Order #{shortId}</span>
+                          <span className="order-date">
+                            {order.created_at
+                              ? new Date(order.created_at).toLocaleDateString('en-IN', {
+                                  day: 'numeric', month: 'short', year: 'numeric',
+                                })
+                              : ''}
+                          </span>
+                        </div>
+                        <div className="order-header-right">
+                          {getStatusBadge(order.fulfillment_status)}
+                          {getStatusBadge(order.payment_status)}
+                        </div>
+                      </div>
+
+                      {/* Items */}
+                      {items.length > 0 ? (
+                        <div className="order-items-list">
+                          {items.map((item, idx) => (
+                            <div className="order-body" key={idx}>
+                              <div className="order-img">
+                                {item.image_url || item.image ? (
+                                  <img
+                                    src={item.image_url || item.image}
+                                    alt={item.name || item.product_name}
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                  />
+                                ) : null}
+                              </div>
+                              <div className="order-info">
+                                <h4>{item.name || item.product_name || 'Product'}</h4>
+                                <p>Qty: {item.quantity || 1}</p>
+                                <p className="price">₹{item.price ?? '—'}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', margin: '10px 0' }}>
+                          No item details available.
+                        </p>
+                      )}
+
+                      {/* Order Footer */}
+                      <div className="order-footer">
+                        <div className="order-footer-info">
+                          {order.payment_method && (
+                            <span className="footer-tag">
+                              <CreditCard size={14} /> {order.payment_method}
+                            </span>
+                          )}
+                          {order.tracking_number && (
+                            <span className="footer-tag">
+                              <Truck size={14} /> {order.courier_partner ? `${order.courier_partner}: ` : ''}{order.tracking_number}
+                            </span>
+                          )}
+                        </div>
+                        <div className="order-total">
+                          Total: <strong>₹{order.total_amount ?? '—'}</strong>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </main>
         </div>
       </div>
