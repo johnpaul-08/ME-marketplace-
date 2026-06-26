@@ -7,6 +7,7 @@ import BackButton from '../components/BackButton';
 import MoonRating from '../components/MoonRating';
 import '../styles/ProductDetail.css';
 import { supabase } from '../supabase';
+import { useWishlist } from '../context/wishlistContext';
 
 const ProductDetailScreen = () => {
   
@@ -14,6 +15,7 @@ const ProductDetailScreen = () => {
   const { addToCart } = useCart();
   const [product, setProduct]= useState(null);
   const [reviews, setReviews]=useState([]);
+  const { toggleWishlist, isWishlisted } = useWishlist();
   
   useEffect(() => {
     fetchProduct();
@@ -111,7 +113,7 @@ const ProductDetailScreen = () => {
               <button className="add-to-cart-big" onClick={handleAddToCart}>
                 <ShoppingCart size={20} /> Add to Cart
               </button>
-              <button className="wishlist-btn"><Heart /></button>
+              <button className="wishlist-btn" onClick={()=>toggleWishlist(product.id)}><Heart fill={isWishlisted(product.id) ? "red" : "none"} color={isWishlisted(product.id) ? "red" : "currentColor"} /></button>
             </div>
             
             <div className="trust-badges">
