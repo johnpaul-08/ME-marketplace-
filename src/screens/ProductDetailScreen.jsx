@@ -7,6 +7,7 @@ import BackButton from '../components/BackButton';
 import MoonRating from '../components/MoonRating';
 import '../styles/ProductDetail.css';
 import { supabase } from '../supabase';
+import Skeleton from '../components/Skeleton';
 
 const ProductDetailScreen = () => {
   
@@ -56,7 +57,32 @@ const ProductDetailScreen = () => {
   };
 
   if (!product) {
-    return <div>Loading...</div>;
+    return (
+      <div className="section product-detail-page" style={{ paddingTop: '120px' }}>
+        <div className="container">
+          <BackButton />
+          <div className="detail-grid">
+            <div className="detail-images">
+              <Skeleton type="image" height="500px" style={{ borderRadius: '15px' }} />
+            </div>
+            
+            <div className="detail-info">
+              <Skeleton type="text" width="30%" height="24px" style={{ marginBottom: '20px', borderRadius: '20px' }} />
+              <Skeleton type="text" width="80%" height="40px" style={{ marginBottom: '15px' }} />
+              <Skeleton type="text" width="40%" height="20px" style={{ marginBottom: '25px' }} />
+              <Skeleton type="text" width="20%" height="30px" style={{ marginBottom: '30px' }} />
+              
+              <Skeleton type="text" width="100%" />
+              <Skeleton type="text" width="100%" />
+              <Skeleton type="text" width="90%" style={{ marginBottom: '30px' }} />
+              
+              <Skeleton type="image" width="100%" height="60px" style={{ marginBottom: '15px', borderRadius: '8px' }} />
+              <Skeleton type="image" width="60px" height="60px" style={{ borderRadius: '8px' }} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
