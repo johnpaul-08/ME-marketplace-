@@ -34,6 +34,21 @@ const ProductDetailScreen = () => {
         console.error(error);
         return;
       }
+
+      // Fetch the seller's shop name 
+      if (data.seller_id) {
+        const { data: sellerData } = await supabase
+          .schema('marketplace_dataspace')
+          .from('sellers')
+          .select('shop_name')
+          .eq('id', data.seller_id)
+          .single();
+          
+        if (sellerData) {
+          data.shop_name = sellerData.shop_name;
+        }
+      }
+
       setProduct(data);
   }
 
@@ -92,12 +107,12 @@ const ProductDetailScreen = () => {
         <div className="detail-grid">
           <div className="detail-images">
             <div className="main-image-placeholder">
-              <img src={product.images?.[0] || "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"} alt={product.name} />
+              <img src={product.images?.[0]} alt={product.name} />
             </div>
           </div>
           
           <div className="detail-info">
-            <span className="brand-label">La Luna Exclusive</span>
+            <span className="brand-label">{product.shop_name || 'Marketplace Item'}</span>
             <h1>{product.name}</h1>
             <MoonRating rating={product.rating} count={1240} />
             <div className="price-tag">
@@ -109,7 +124,7 @@ const ProductDetailScreen = () => {
               {product.description}
             </p>
             
-            <div className="selectors">
+            {/* <div className="selectors">
               <div className="selector">
                 <label>Size</label>
                 <select>
@@ -118,7 +133,7 @@ const ProductDetailScreen = () => {
                   <option>100ml</option>
                 </select>
               </div>
-            </div>
+            </div> */}
             
             <div className="action-btns">
               <button className="add-to-cart-big" onClick={handleAddToCart}>
