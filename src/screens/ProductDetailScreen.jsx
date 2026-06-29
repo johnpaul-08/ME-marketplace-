@@ -7,6 +7,7 @@ import BackButton from '../components/BackButton';
 import MoonRating from '../components/MoonRating';
 import '../styles/ProductDetail.css';
 import { supabase } from '../supabase';
+import Skeleton from '../components/Skeleton';
 
 const ProductDetailScreen = () => {
   
@@ -33,6 +34,21 @@ const ProductDetailScreen = () => {
         console.error(error);
         return;
       }
+
+      // Fetch the seller's shop name 
+      if (data.seller_id) {
+        const { data: sellerData } = await supabase
+          .schema('marketplace_dataspace')
+          .from('sellers')
+          .select('shop_name')
+          .eq('id', data.seller_id)
+          .single();
+          
+        if (sellerData) {
+          data.shop_name = sellerData.shop_name;
+        }
+      }
+
       setProduct(data);
   }
 
@@ -56,7 +72,32 @@ const ProductDetailScreen = () => {
   };
 
   if (!product) {
-    return <div>Loading...</div>;
+    return (
+      <div className="section product-detail-page" style={{ paddingTop: '120px' }}>
+        <div className="container">
+          <BackButton />
+          <div className="detail-grid">
+            <div className="detail-images">
+              <Skeleton type="image" height="500px" style={{ borderRadius: '15px' }} />
+            </div>
+            
+            <div className="detail-info">
+              <Skeleton type="text" width="30%" height="24px" style={{ marginBottom: '20px', borderRadius: '20px' }} />
+              <Skeleton type="text" width="80%" height="40px" style={{ marginBottom: '15px' }} />
+              <Skeleton type="text" width="40%" height="20px" style={{ marginBottom: '25px' }} />
+              <Skeleton type="text" width="20%" height="30px" style={{ marginBottom: '30px' }} />
+              
+              <Skeleton type="text" width="100%" />
+              <Skeleton type="text" width="100%" />
+              <Skeleton type="text" width="90%" style={{ marginBottom: '30px' }} />
+              
+              <Skeleton type="image" width="100%" height="60px" style={{ marginBottom: '15px', borderRadius: '8px' }} />
+              <Skeleton type="image" width="60px" height="60px" style={{ borderRadius: '8px' }} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -66,12 +107,12 @@ const ProductDetailScreen = () => {
         <div className="detail-grid">
           <div className="detail-images">
             <div className="main-image-placeholder">
-              <img src={product.images?.[0] || "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"} alt={product.name} />
+              <img src={product.images?.[0]} alt={product.name} />
             </div>
           </div>
           
           <div className="detail-info">
-            <span className="brand-label">La Luna Exclusive</span>
+            <span className="brand-label">{product.shop_name || 'Marketplace Item'}</span>
             <h1>{product.name}</h1>
             <MoonRating rating={product.rating} count={1240} />
             <div className="price-tag">
@@ -83,7 +124,7 @@ const ProductDetailScreen = () => {
               {product.description}
             </p>
             
-            <div className="selectors">
+            {/* <div className="selectors">
               <div className="selector">
                 <label>Size</label>
                 <select>
@@ -92,7 +133,7 @@ const ProductDetailScreen = () => {
                   <option>100ml</option>
                 </select>
               </div>
-            </div>
+            </div> */}
             
             <div className="action-btns">
               <button className="add-to-cart-big" onClick={handleAddToCart}>
