@@ -30,7 +30,7 @@ const CheckoutScreen = ({ user }) => {
     notes: '',
     paymentMethod: 'Credit Card',
   });
-  
+
   const [saveNewAddress, setSaveNewAddress] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -88,11 +88,11 @@ const CheckoutScreen = ({ user }) => {
     }
 
     setLoading(true);
-    
+
     let finalShippingAddress = '';
     let customerName = '';
     let customerPhone = '';
-    
+
     if (selectedAddressId === 'new') {
       // Validate new address form
       if (!form.full_name || !form.phone || !form.address_line_1 || !form.city || !form.state || !form.postal_code) {
@@ -100,11 +100,11 @@ const CheckoutScreen = ({ user }) => {
         setLoading(false);
         return;
       }
-      
+
       finalShippingAddress = `${form.address_line_1}, ${form.address_line_2 ? form.address_line_2 + ', ' : ''}${form.landmark ? 'Near ' + form.landmark + ', ' : ''}${form.city}, ${form.state} - ${form.postal_code}`;
       customerName = form.full_name;
       customerPhone = form.phone;
-      
+
       // Save to database if requested
       if (saveNewAddress && user?.id) {
         const { error: addressError } = await supabase
@@ -122,7 +122,7 @@ const CheckoutScreen = ({ user }) => {
             postal_code: form.postal_code,
             is_default: savedAddresses.length === 0 // make default if it's the first one
           });
-          
+
         if (addressError) {
           console.error("Failed to save address:", addressError);
           // Non-blocking error, we can still proceed with the order
@@ -135,7 +135,7 @@ const CheckoutScreen = ({ user }) => {
         setLoading(false);
         return;
       }
-      
+
       finalShippingAddress = `${selected.address_line_1}, ${selected.address_line_2 ? selected.address_line_2 + ', ' : ''}${selected.landmark ? 'Near ' + selected.landmark + ', ' : ''}${selected.city}, ${selected.state} - ${selected.postal_code}`;
       customerName = selected.full_name;
       customerPhone = selected.phone;
@@ -198,48 +198,37 @@ const CheckoutScreen = ({ user }) => {
 
     clearCart();
 
-    // Fire order-booked notification + inbox entry if enabled
-    try {
-      const prefs = JSON.parse(localStorage.getItem('me_notif_settings') || '{}');
-      const masterOn = prefs.master_enabled !== false;
+    // ── Fire order notifications (optimistic — updates badge instantly) ──
+    const method = form.paymentMethod || 'Online';
+    const uid = user?.id;
 
-      if (masterOn && prefs.notif_order_booked !== false) {
-        // Toast
-        showToast({
-          title: 'Order Booked! 🎉',
-          message: `Your order has been placed successfully. We'll notify you of updates.`,
-          type: 'order',
-          duration: 5000,
-        });
-        // Inbox notification (updates badge count)
-        addNotification({
-          type: 'order',
-          color: '#ff7612',
-          emoji: '🎉',
-          title: 'Order Booked!',
-          message: `Your order has been placed successfully. We'll notify you of updates.`,
-        });
-      }
+    // Order booked
+    showToast({
+      title: 'Order Booked!',
+      message: `Your order has been placed successfully. We'll notify you of updates.`,
+      type: 'order',
+      duration: 5000,
+    });
+    addNotification({
+      type:    'order',
+      color:   '#ff7612',
+      title:   'Order Booked!',
+      message: `Your order has been placed successfully. We'll notify you of updates.`,
+    }, uid);
 
-      if (masterOn && prefs.notif_payment_success !== false) {
-        const method = form.paymentMethod || 'Online';
-        // Toast
-        showToast({
-          title: 'Payment Received ✅',
-          message: `₹${totalAmount.toFixed(2)} paid via ${method}.`,
-          type: 'success',
-          duration: 5000,
-        });
-        // Inbox notification
-        addNotification({
-          type: 'payment',
-          color: '#2ed573',
-          emoji: '✅',
-          title: 'Payment Received',
-          message: `₹${totalAmount.toFixed(2)} paid via ${method}.`,
-        });
-      }
-    } catch (_) {}
+    // Payment received
+    showToast({
+      title: 'Payment Received',
+      message: `₹${totalAmount.toFixed(2)} paid via ${method}.`,
+      type: 'success',
+      duration: 5000,
+    });
+    addNotification({
+      type:    'payment',
+      color:   '#2ed573',
+      title:   'Payment Received',
+      message: `₹${totalAmount.toFixed(2)} paid via ${method}.`,
+    }, uid);
 
     navigate('/order-success');
   };
@@ -260,20 +249,20 @@ const CheckoutScreen = ({ user }) => {
           <div className="checkout-layout">
             {/* Left — Form */}
             <div className="checkout-form">
-              
+
               {/* Shipping Addresses List */}
               <div className="form-section">
                 <h3>Shipping Address</h3>
-                
+
                 {fetchingAddresses ? (
-                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center', margin: '20px 0' }}>
-                     <Loader size={18} className="spin" /> <span>Loading addresses...</span>
-                   </div>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', margin: '20px 0' }}>
+                    <Loader size={18} className="spin" /> <span>Loading addresses...</span>
+                  </div>
                 ) : (
                   <div className="addresses-list">
                     {savedAddresses.map((addr) => (
-                      <div 
-                        key={addr.id} 
+                      <div
+                        key={addr.id}
                         className={`address-card ${selectedAddressId === addr.id ? 'selected' : ''}`}
                         onClick={() => setSelectedAddressId(addr.id)}
                       >
@@ -290,8 +279,8 @@ const CheckoutScreen = ({ user }) => {
                         </div>
                       </div>
                     ))}
-                    
-                    <div 
+
+                    <div
                       className={`address-card new-address-card ${selectedAddressId === 'new' ? 'selected' : ''}`}
                       onClick={() => setSelectedAddressId('new')}
                     >
@@ -372,13 +361,13 @@ const CheckoutScreen = ({ user }) => {
                       onChange={handleChange}
                       required={selectedAddressId === 'new'}
                     />
-                    
+
                     {user?.id && (
                       <div className="save-address-checkbox full-width">
                         <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', marginTop: '10px' }}>
-                          <input 
-                            type="checkbox" 
-                            checked={saveNewAddress} 
+                          <input
+                            type="checkbox"
+                            checked={saveNewAddress}
                             onChange={(e) => setSaveNewAddress(e.target.checked)}
                             style={{ width: 'auto', cursor: 'pointer' }}
                           />
@@ -389,7 +378,7 @@ const CheckoutScreen = ({ user }) => {
                   </div>
                 </div>
               )}
-              
+
               {/* Order Notes */}
               <div className="form-section">
                 <h3>Order Notes</h3>

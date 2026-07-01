@@ -76,7 +76,7 @@ const NotificationInboxTab = () => {
                 style={{ background: n.color || 'var(--accent)' }}
               />
 
-              {/* Icon / emoji bubble */}
+              {/* Icon bubble */}
               <div
                 className="notif-inbox-icon"
                 style={{
@@ -84,7 +84,7 @@ const NotificationInboxTab = () => {
                   color: n.color || 'var(--accent)',
                 }}
               >
-                {n.emoji || '🔔'}
+                <Bell size={18} />
               </div>
 
               {/* Content */}
