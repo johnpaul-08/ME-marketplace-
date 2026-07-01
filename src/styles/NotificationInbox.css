@@ -1,0 +1,307 @@
+/* ============================================================
+   Notification Inbox Styles
+   ============================================================ */
+
+.notif-inbox {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ---------- Header ---------- */
+.notif-inbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.notif-inbox-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notif-inbox-title h2 {
+  margin: 0;
+}
+
+.notif-inbox-badge {
+  background: var(--accent);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.03em;
+  animation: pulseBadge 2s infinite;
+}
+
+@keyframes pulseBadge {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 118, 18, 0.35); }
+  50%       { box-shadow: 0 0 0 6px rgba(255, 118, 18, 0); }
+}
+
+.notif-inbox-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.notif-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notif-action-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.notif-action-btn.danger:hover {
+  background: rgba(255, 71, 87, 0.08);
+  color: #ff4757;
+  border-color: #ff4757;
+}
+
+/* ---------- Empty State ---------- */
+.notif-inbox-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 80px 24px;
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.notif-inbox-empty-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.notif-inbox-empty h3 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.notif-inbox-empty p {
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+/* ---------- List ---------- */
+.notif-inbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* ---------- Item ---------- */
+.notif-inbox-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s ease;
+  background: var(--bg-primary);
+}
+
+.notif-inbox-item:last-child {
+  border-bottom: none;
+}
+
+.notif-inbox-item:hover {
+  background: var(--bg-secondary);
+}
+
+.notif-inbox-item.unread {
+  background: color-mix(in srgb, var(--accent) 4%, var(--bg-primary));
+}
+
+.notif-inbox-item.unread:hover {
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-primary));
+}
+
+/* Left accent bar for unread */
+.notif-inbox-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.notif-inbox-item.unread .notif-inbox-accent {
+  opacity: 1;
+}
+
+/* Emoji / icon bubble */
+.notif-inbox-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* Content */
+.notif-inbox-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-inbox-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.notif-inbox-item-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+/* Blue unread dot */
+.notif-inbox-unread-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+.notif-inbox-message {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0 0 5px;
+  line-height: 1.5;
+}
+
+.notif-inbox-time {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* Delete button */
+.notif-inbox-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 4px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s, background 0.2s;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.notif-inbox-item:hover .notif-inbox-delete {
+  opacity: 1;
+}
+
+.notif-inbox-delete:hover {
+  color: #ff4757;
+  background: rgba(255, 71, 87, 0.1);
+}
+
+/* ---------- Header Bell Badge ---------- */
+.header-notif-btn {
+  position: relative;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-notif-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #ff4757;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid var(--bg-primary);
+  line-height: 1;
+}
+
+/* ---------- Sidebar Bell Badge ---------- */
+.sidebar-notif-badge {
+  margin-left: auto;
+  background: #ff4757;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .notif-inbox-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .notif-inbox-item {
+    gap: 10px;
+    padding: 14px 14px;
+  }
+  .notif-inbox-delete {
+    opacity: 1;
+  }
+}

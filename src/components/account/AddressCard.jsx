@@ -1,4 +1,4 @@
-import { MapPin, Phone, Home, Briefcase, MoreHorizontal } from "lucide-react";
+import { MapPin, Phone, Home, Briefcase } from "lucide-react";
 import "../../styles/AddressCard.css";
 
 const AddressCard = ({

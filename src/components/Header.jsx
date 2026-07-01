@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
+import { Search, ShoppingBag, User, Menu, X, Bell } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useNotifications } from '../context/NotificationContext';
 import Logo from './Logo';
 import '../styles/Header.css';
 
@@ -10,6 +11,7 @@ const Header = ({ isLoggedIn = false }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { cartCount } = useCart();
+  const { unreadCount } = useNotifications();
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -55,7 +57,15 @@ const Header = ({ isLoggedIn = false }) => {
           </form>
 
           {isLoggedIn ? (
-            <Link to="/account" className="icon-btn profile-btn"><User size={22} /></Link>
+            <>
+              <Link to="/account" className="icon-btn profile-btn"><User size={22} /></Link>
+              <Link to="/account?tab=notifications" className="icon-btn header-notif-btn" title="Notifications" id="header-notifications-btn">
+                <Bell size={22} />
+                {unreadCount > 0 && (
+                  <span className="header-notif-count">{unreadCount > 9 ? '9+' : unreadCount}</span>
+                )}
+              </Link>
+            </>
           ) : (
             <div className="auth-links">
               <Link to="/login" className="login-link">Login</Link>

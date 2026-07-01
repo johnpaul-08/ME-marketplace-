@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CreditCard, Smartphone, Banknote, Loader, MapPin, Plus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
+import { useNotifications } from '../context/NotificationContext';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
 import '../styles/CheckoutScreen.css';
@@ -9,6 +11,8 @@ import '../styles/CheckoutScreen.css';
 const CheckoutScreen = ({ user }) => {
   const { cartItems, cartTotal, clearCart } = useCart();
   const navigate = useNavigate();
+  const { showToast } = useToast();
+  const { addNotification } = useNotifications();
 
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState('');
@@ -193,6 +197,50 @@ const CheckoutScreen = ({ user }) => {
     }
 
     clearCart();
+
+    // Fire order-booked notification + inbox entry if enabled
+    try {
+      const prefs = JSON.parse(localStorage.getItem('me_notif_settings') || '{}');
+      const masterOn = prefs.master_enabled !== false;
+
+      if (masterOn && prefs.notif_order_booked !== false) {
+        // Toast
+        showToast({
+          title: 'Order Booked! 🎉',
+          message: `Your order has been placed successfully. We'll notify you of updates.`,
+          type: 'order',
+          duration: 5000,
+        });
+        // Inbox notification (updates badge count)
+        addNotification({
+          type: 'order',
+          color: '#ff7612',
+          emoji: '🎉',
+          title: 'Order Booked!',
+          message: `Your order has been placed successfully. We'll notify you of updates.`,
+        });
+      }
+
+      if (masterOn && prefs.notif_payment_success !== false) {
+        const method = form.paymentMethod || 'Online';
+        // Toast
+        showToast({
+          title: 'Payment Received ✅',
+          message: `₹${totalAmount.toFixed(2)} paid via ${method}.`,
+          type: 'success',
+          duration: 5000,
+        });
+        // Inbox notification
+        addNotification({
+          type: 'payment',
+          color: '#2ed573',
+          emoji: '✅',
+          title: 'Payment Received',
+          message: `₹${totalAmount.toFixed(2)} paid via ${method}.`,
+        });
+      }
+    } catch (_) {}
+
     navigate('/order-success');
   };
 

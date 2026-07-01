@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState,useEffect } from 'react';
 import Hero from '../components/Hero';
 import { Link } from 'react-router-dom';
@@ -20,7 +19,8 @@ const HomeScreen = () => {
     const {data, error} = await supabase
     .schema('marketplace_dataspace')
     .from('products')
-    .select('*');
+    .select('*')
+    .order("created_at",{ ascending : false });
 
     if (error){
       console.error(error);
