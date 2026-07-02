@@ -1,7 +1,6 @@
-import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { ShoppingCart, Heart, ShieldCheck, Truck, Star } from 'lucide-react';
+import { ShoppingCart, Heart, ShieldCheck } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import BackButton from '../components/BackButton';
 import MoonRating from '../components/MoonRating';
@@ -17,6 +16,7 @@ const ProductDetailScreen = () => {
   const [product, setProduct]= useState(null);
   const [reviews, setReviews]=useState([]);
   const { toggleWishlist, isWishlisted } = useWishlist();
+  const [showGallery, setShowGallery] = useState(false);
   
   useEffect(() => {
     fetchProduct();
@@ -124,6 +124,7 @@ const ProductDetailScreen = () => {
         ? 0
         : reviews.reduce((sum, review) => sum + review.rating, 0) /
           reviews.length;
+          console.log(product.images);
 
   return (
     <div className="section product-detail-page" style={{ paddingTop: '120px' }}>
@@ -133,6 +134,14 @@ const ProductDetailScreen = () => {
           <div className="detail-images">
             <div className="main-image-placeholder">
               <img src={product.images?.[0]} alt={product.name} />
+                {product.images?.length > 1 && (
+                  <button
+                    className="view-all-images"
+                    onClick={() => setShowGallery(true)}
+                  >
+                    View All Images
+                  </button>
+                )}
             </div>
           </div>
           
@@ -181,6 +190,34 @@ const ProductDetailScreen = () => {
           </div>
         </div>
       </div>
+            {showGallery && (
+        <div
+          className="gallery-overlay"
+          onClick={() => setShowGallery(false)}
+        >
+          <div
+            className="gallery-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="gallery-close"
+              onClick={() => setShowGallery(false)}
+            >
+              ✕
+            </button>
+
+            <div className="gallery-grid">
+              {product.images?.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`${product.name} ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
