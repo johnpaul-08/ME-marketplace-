@@ -4,14 +4,17 @@ import { supabase } from '../supabase';
 import ProductCard from '../components/ProductCard';
 import BackButton from '../components/BackButton';
 import { Trophy } from 'lucide-react';
+import Skeleton from '../components/Skeleton';
 
 const BestSellersScreen = () => {
 
     const [products, setProducts]= useState([]);
+    const [loading, setLoading] = useState(true);
   
     useEffect(()=>{fetchProducts();},[]);
   
     async function fetchProducts(){
+      setLoading(true);
       const {data, error} = await supabase
       .schema('marketplace_dataspace')
       .from('products')
@@ -19,9 +22,11 @@ const BestSellersScreen = () => {
   
       if (error){
         console.error(error);
+        setLoading(false);
         return;
       }
       setProducts(data);
+      setLoading(false);
     }
     
   return (
@@ -35,9 +40,23 @@ const BestSellersScreen = () => {
         </div>
         
         <div className="products-grid">
-          {products.map(product => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {loading ? (
+            Array.from({ length: 4 }).map((_, idx) => (
+              <div key={`skel-${idx}`} style={{ padding: '15px', background: 'var(--bg-secondary)', borderRadius: '12px' }}>
+                <Skeleton type="image" height="250px" style={{ marginBottom: '15px' }} />
+                <Skeleton type="text" width="60%" style={{ marginBottom: '10px' }} />
+                <Skeleton type="text" width="80%" style={{ marginBottom: '15px' }} />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Skeleton type="text" width="30%" />
+                  <Skeleton type="circular" width="40px" height="40px" />
+                </div>
+              </div>
+            ))
+          ) : (
+            products.map(product => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          )}
         </div>
       </div>
     </div>

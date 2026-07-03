@@ -70,7 +70,7 @@ const LoginScreen = ({ onLogin }) => {
         </form>
 
         <p className="auth-footer">
-          Don't have an account? <a href="/signup">Sign Up</a>
+          Don't have an account? <Link to="/signup">Sign Up</Link>
         </p>
       </div>
     </div>

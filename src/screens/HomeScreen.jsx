@@ -1,29 +1,34 @@
-import React from 'react';
 import { useState,useEffect } from 'react';
 import Hero from '../components/Hero';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import { motion } from 'framer-motion';
 import { supabase } from '../supabase';
+import Skeleton from '../components/Skeleton';
 import '../styles/HomeScreen.css';
 
 const HomeScreen = () => {
 
   const [products, setProducts]= useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(()=>{fetchProducts();},[]);
 
   async function fetchProducts(){
+    setLoading(true);
     const {data, error} = await supabase
     .schema('marketplace_dataspace')
     .from('products')
-    .select('*');
+    .select('*')
+    .order("created_at",{ ascending : false });
 
     if (error){
       console.error(error);
+      setLoading(false);
       return;
     }
     setProducts(data);
+    setLoading(false);
   }
 
 
@@ -61,18 +66,33 @@ const HomeScreen = () => {
           </div>
           
           <div className="products-grid">
-            {products
-              .filter(p => p.stock !== 0 && p.stock_quantity !== 0 && p.in_stock !== false)
-              .map((product, i) => (
-                <motion.div
-                  key={product.id}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.05 }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
-              ))}
+            {loading ? (
+              // Show 4 skeleton cards while loading
+              Array.from({ length: 4 }).map((_, idx) => (
+                <div key={`skel-${idx}`} style={{ padding: '15px', background: 'var(--bg-secondary)', borderRadius: '12px' }}>
+                  <Skeleton type="image" height="250px" style={{ marginBottom: '15px' }} />
+                  <Skeleton type="text" width="60%" style={{ marginBottom: '10px' }} />
+                  <Skeleton type="text" width="80%" style={{ marginBottom: '15px' }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Skeleton type="text" width="30%" />
+                    <Skeleton type="circular" width="40px" height="40px" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              products
+                .filter(p => p.stock !== 0 && p.stock_quantity !== 0 && p.in_stock !== false)
+                .map((product, i) => (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.05 }}
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
+                ))
+            )}
           </div>
         </div>
       </section>

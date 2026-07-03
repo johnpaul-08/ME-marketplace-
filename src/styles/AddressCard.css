@@ -1,0 +1,84 @@
+.address-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 18px;
+  transition: 0.2s;
+}
+
+.address-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+}
+
+.address-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.address-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.default-badge {
+  margin-left: 10px;
+  padding: 4px 10px;
+  background: #2874f0;
+  color: white;
+  font-size: 12px;
+  border-radius: 50px;
+}
+
+.address-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.address-phone,
+.address-location {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  color: #555;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.address-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.secondary-btn {
+  border: 1px solid #d1d5db;
+  background: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.secondary-btn:hover {
+  background: #f5f5f5;
+}
+
+.danger-btn {
+  border: none;
+  background: #dc2626;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.danger-btn:hover {
+  background: #b91c1c;
+}

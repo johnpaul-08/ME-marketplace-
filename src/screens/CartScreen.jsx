@@ -1,12 +1,51 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import BackButton from '../components/BackButton';
+import { supabase } from '../supabase';
 import '../styles/CartScreen.css';
 
 const CartScreen = () => {
-  const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
+  const {
+    cartItems,
+    setCartItems,
+    updateQuantity,
+    removeFromCart,
+    cartTotal
+  } = useCart();
+
+  const fetchCart = async () => {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .schema('marketplace_dataspace')
+        .from('cart_items')
+        .select(`
+          quantity,
+          products (*)
+        `)
+        .eq('buyer_id', user.id);
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      const formattedCart = data.map(item => ({
+        ...item.products,
+        quantity: item.quantity
+      }));
+
+      setCartItems(formattedCart);
+  };
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   if (cartItems.length === 0) {
     return (
@@ -33,7 +72,7 @@ const CartScreen = () => {
             {cartItems.map((item) => (
               <div className="cart-item" key={item.id}>
                 <div className="item-img-placeholder">
-                  <img src={item.image || 'https://placehold.co/100x100'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                  <img src={item.images?.[0] || 'https://placehold.co/100x100'} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
                 </div>
                 <div className="item-details">
                   <h3>{item.name}</h3>

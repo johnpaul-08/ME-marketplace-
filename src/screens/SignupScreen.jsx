@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight } from 'lucide-react';
 import { supabase } from '../supabase';
 import BackButton from '../components/BackButton';
@@ -112,7 +112,7 @@ const SignupScreen = ({ onSignup }) => {
         </form>
 
         <p className="auth-footer">
-          Already have an account? <a href="/login">Login</a>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
       </div>
     </div>

@@ -1,15 +1,56 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import MoonRating from '../components/MoonRating';
+import { supabase } from '../supabase';
 import '../styles/ProductCard.css';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
-  const isOutOfStock = product.stock === 0 || product.stock_quantity === 0 || product.in_stock === false;
+  // Track live stock count — start from what was fetched
+  const initialStock =
+    product.stock ?? product.stock_quantity ?? product.in_stock ?? null;
+  const [stockCount, setStockCount] = useState(initialStock);
+
+  // Real-time subscription: update stockCount whenever this product row changes
+  useEffect(() => {
+    const channel = supabase
+      .channel(`product-stock-${product.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'marketplace_dataspace',
+          table: 'products',
+          filter: `id=eq.${product.id}`,
+        },
+        (payload) => {
+          const updated = payload.new;
+          const newStock =
+            updated.stock ?? updated.stock_quantity ?? updated.in_stock ?? null;
+          setStockCount(newStock);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [product.id]);
+
+  const isOutOfStock =
+    stockCount === 0 ||
+    stockCount === false ||
+    (typeof stockCount === 'number' && stockCount <= 0);
+
+  const isLowStock =
+    !isOutOfStock &&
+    typeof stockCount === 'number' &&
+    stockCount > 0 &&
+    stockCount < 5;
 
   const handleBuyNow = (e) => {
     e.preventDefault();
@@ -32,6 +73,9 @@ const ProductCard = ({ product }) => {
           ? <span className="badge badge-out-of-stock">Out of Stock</span>
           : product.discount && <span className="badge">-{product.discount}%</span>
         }
+        {isLowStock && (
+          <span className="badge badge-low-stock">Only {stockCount} left!</span>
+        )}
         {!isOutOfStock && (
           <button className="add-to-cart-overlay" onClick={handleAddToCart}>
             <ShoppingCart size={18} /> Add to Cart
