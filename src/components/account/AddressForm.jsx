@@ -3,6 +3,7 @@ import "../../styles/AddressForm.css";
 
 const AddressForm = ({ onSubmit, initialData = {}, title = "Add Address" }) => {
   const [formData, setFormData] = useState({
+    full_name: initialData.full_name || "",
     phone: initialData.phone || "",
     address_line_1: initialData.address_line_1 || "",
     address_line_2: initialData.address_line_2 || "",
@@ -33,6 +34,16 @@ const AddressForm = ({ onSubmit, initialData = {}, title = "Add Address" }) => {
     <form className="address-form" onSubmit={handleSubmit}>
       <h2>{title}</h2>
 
+      <div className="form-group">
+        <label>Full Name</label>
+        <input
+          type="text"
+          name="full_name"
+          value={formData.full_name}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
       <div className="form-group">
         <label>Phone Number</label>

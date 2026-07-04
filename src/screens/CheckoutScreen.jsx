@@ -137,7 +137,7 @@ const CheckoutScreen = ({ user }) => {
       }
 
       finalShippingAddress = `${selected.address_line_1}, ${selected.address_line_2 ? selected.address_line_2 + ', ' : ''}${selected.landmark ? 'Near ' + selected.landmark + ', ' : ''}${selected.city}, ${selected.state} - ${selected.postal_code}`;
-      customerName = selected.full_name;
+      customerName = selected.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Customer';
       customerPhone = selected.phone;
     }
 

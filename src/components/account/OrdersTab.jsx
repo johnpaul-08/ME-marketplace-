@@ -1,7 +1,7 @@
 import { ShoppingBag } from "lucide-react";
 import OrderCard from "./OrderCard";
 
-const OrdersTab = ({ orders, loadingOrders }) => {
+const OrdersTab = ({ orders, loadingOrders, user }) => {
   return (
     <>
       <h2>My Orders</h2>
@@ -20,6 +20,7 @@ const OrdersTab = ({ orders, loadingOrders }) => {
             <OrderCard
               key={order.id}
               order={order}
+              user={user}
             />
           ))}
         </div>
