@@ -3,6 +3,7 @@ import "../../styles/AddressForm.css";
 
 const AddressForm = ({ onSubmit, initialData = {}, title = "Add Address" }) => {
   const [formData, setFormData] = useState({
+    name: initialData.name || "",
     phone: initialData.phone || "",
     address_line_1: initialData.address_line_1 || "",
     address_line_2: initialData.address_line_2 || "",
@@ -10,8 +11,6 @@ const AddressForm = ({ onSubmit, initialData = {}, title = "Add Address" }) => {
     city: initialData.city || "",
     state: initialData.state || "",
     postal_code: initialData.postal_code || "",
-    country: initialData.country || "India",
-    address_type: initialData.address_type || "Home",
     is_default: initialData.is_default || false,
   });
 
@@ -32,6 +31,17 @@ const AddressForm = ({ onSubmit, initialData = {}, title = "Add Address" }) => {
   return (
     <form className="address-form" onSubmit={handleSubmit}>
       <h2>{title}</h2>
+
+      <div className="form-group">
+        <label>Name</label>
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+        />
+      </div>
 
 
       <div className="form-group">
@@ -112,29 +122,6 @@ const AddressForm = ({ onSubmit, initialData = {}, title = "Add Address" }) => {
           />
         </div>
 
-        <div className="form-group">
-          <label>Country</label>
-          <input
-            type="text"
-            name="country"
-            value={formData.country}
-            onChange={handleChange}
-          />
-        </div>
-      </div>
-
-      <div className="form-group">
-        <label>Address Type</label>
-
-        <select
-          name="address_type"
-          value={formData.address_type}
-          onChange={handleChange}
-        >
-          <option value="Home">Home</option>
-          <option value="Work">Work</option>
-          <option value="Other">Other</option>
-        </select>
       </div>
 
       <label className="checkbox-group">

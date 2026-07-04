@@ -215,7 +215,6 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
                           <div className="address-header">
                               <div className="address-header-left">
                                 <MapPin size={18} />
-                                <strong>{defaultAddress.address_type || "Home"}</strong>
                                 <span className="default-badge">Default</span>
                               </div>
 

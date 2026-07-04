@@ -59,6 +59,7 @@ const AccountScreen = ({ user, onLogout }) => {
         .from("buyer_addresses")
         .select("*")
         .eq("buyer_id", user.id)
+        .order("is_default", { ascending: false })
         .order("created_at", { ascending: false });
 
       setAddresses(data || []);
@@ -71,6 +72,22 @@ const AccountScreen = ({ user, onLogout }) => {
   }, [user]);
 
 const handleAddAddress = async (address) => {
+
+  // If this address is marked as default,
+  // remove default from all existing addresses first.
+  if (address.is_default) {
+    const { error: resetError } = await supabase
+      .schema("marketplace_dataspace")
+      .from("buyer_addresses")
+      .update({ is_default: false })
+      .eq("buyer_id", user.id);
+
+    if (resetError) {
+      console.error(resetError);
+      return;
+    }
+  }
+
   const { error } = await supabase
     .schema("marketplace_dataspace")
     .from("buyer_addresses")
@@ -84,10 +101,24 @@ const handleAddAddress = async (address) => {
     return;
   }
 
-  await fetchAddresses();
+  fetchAddresses();
 };
 
 const handleEditAddress = async (id, updatedAddress) => {
+
+  if (updatedAddress.is_default) {
+    const { error: resetError } = await supabase
+      .schema("marketplace_dataspace")
+      .from("buyer_addresses")
+      .update({ is_default: false })
+      .eq("buyer_id", user.id);
+
+    if (resetError) {
+      console.error(resetError);
+      return;
+    }
+  }
+
   const { error } = await supabase
     .schema("marketplace_dataspace")
     .from("buyer_addresses")
@@ -99,7 +130,7 @@ const handleEditAddress = async (id, updatedAddress) => {
     return;
   }
 
-await fetchAddresses();
+  fetchAddresses();
 };
 
 const handleDeleteAddress = async (id) => {

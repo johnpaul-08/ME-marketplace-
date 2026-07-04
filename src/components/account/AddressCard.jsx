@@ -1,4 +1,4 @@
-import { MapPin, Phone, Home, Briefcase } from "lucide-react";
+import { MapPin, Phone} from "lucide-react";
 import "../../styles/AddressCard.css";
 
 const AddressCard = ({
@@ -7,33 +7,19 @@ const AddressCard = ({
   onDelete,
   onSetDefault,
 }) => {
-  const getIcon = () => {
-    switch (address.address_type) {
-      case "Work":
-        return <Briefcase size={16} />;
-      case "Home":
-      default:
-        return <Home size={16} />;
-    }
-  };
 
   return (
     <div className="address-card">
-      <div className="address-card-header">
-        <div className="address-type">
-          {getIcon()}
-          <span>{address.address_type}</span>
-
-          {address.is_default && (
-            <span className="default-badge">
-              Default
-            </span>
-          )}
+      <div className="address-name-row">
+        <div className="address-name">
+          {address.name}
         </div>
-      </div>
 
-      <div className="address-name">
-        {address.full_name}
+        {address.is_default && (
+          <span className="default-badge">
+            Default
+          </span>
+        )}
       </div>
 
       <div className="address-phone">
@@ -53,7 +39,7 @@ const AddressCard = ({
           {address.landmark &&
             `, Near ${address.landmark}`}
 
-          {`, ${address.city}, ${address.state} - ${address.postal_code}, ${address.country}`}
+          {`, ${address.city}, ${address.state} - ${address.postal_code}`}
         </span>
       </div>
 

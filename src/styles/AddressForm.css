@@ -38,7 +38,7 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #2874f0;
+  border-color: #c0392b;
   box-shadow: 0 0 0 3px rgba(40,116,240,.15);
 }
 
@@ -66,7 +66,7 @@
   padding: 14px;
   border: none;
   border-radius: 8px;
-  background: #2874f0;
+  background: #c0392b;
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -75,7 +75,7 @@
 }
 
 .save-address-btn:hover {
-  background: #1d63d3;
+  background: #bd2514;
 }
 
 @media (max-width: 768px) {
