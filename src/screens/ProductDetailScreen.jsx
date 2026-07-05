@@ -17,6 +17,7 @@ const ProductDetailScreen = () => {
   const [reviews, setReviews]=useState([]);
   const { toggleWishlist, isWishlisted } = useWishlist();
   const [showGallery, setShowGallery] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   useEffect(() => {
     fetchProduct();
@@ -124,7 +125,18 @@ const ProductDetailScreen = () => {
         ? 0
         : reviews.reduce((sum, review) => sum + review.rating, 0) /
           reviews.length;
+          reviews.length;
           console.log(product.images);
+
+  const handlePrevImage = () => {
+    if (!product || !product.images) return;
+    setCurrentImageIndex((prev) => (prev === 0 ? product.images.length - 1 : prev - 1));
+  };
+
+  const handleNextImage = () => {
+    if (!product || !product.images) return;
+    setCurrentImageIndex((prev) => (prev === product.images.length - 1 ? 0 : prev + 1));
+  };
 
   return (
     <div className="section product-detail-page" style={{ paddingTop: '120px' }}>
@@ -132,17 +144,54 @@ const ProductDetailScreen = () => {
         <BackButton />
         <div className="detail-grid">
           <div className="detail-images">
-            <div className="main-image-placeholder">
-              <img src={product.images?.[0]} alt={product.name} />
-                {product.images?.length > 1 && (
-                  <button
-                    className="view-all-images"
-                    onClick={() => setShowGallery(true)}
+            <div className="main-image-container" style={{ position: 'relative', overflow: 'hidden', borderRadius: '15px' }}>
+              <img 
+                src={product.images?.[currentImageIndex] || 'https://placehold.co/500x500?text=No+Image'} 
+                alt={product.name} 
+                style={{ width: '100%', height: '500px', objectFit: 'cover' }}
+              />
+              
+              {product.images?.length > 1 && (
+                <>
+                  <button 
+                    onClick={handlePrevImage}
+                    style={{ position: 'absolute', top: '50%', left: '10px', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', fontSize: '18px', color: '#333' }}
                   >
-                    View All Images
+                    ❮
                   </button>
-                )}
+                  <button 
+                    onClick={handleNextImage}
+                    style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', fontSize: '18px', color: '#333' }}
+                  >
+                    ❯
+                  </button>
+                </>
+              )}
             </div>
+            
+            {product.images?.length > 1 && (
+              <div className="image-thumbnails" style={{ display: 'flex', gap: '10px', marginTop: '15px', overflowX: 'auto', paddingBottom: '10px' }}>
+                {product.images.map((image, index) => (
+                  <div 
+                    key={index} 
+                    onClick={() => setCurrentImageIndex(index)}
+                    style={{ 
+                      width: '80px', 
+                      height: '80px', 
+                      flexShrink: 0, 
+                      cursor: 'pointer', 
+                      borderRadius: '8px',
+                      overflow: 'hidden',
+                      border: currentImageIndex === index ? '2px solid var(--accent, #3498db)' : '2px solid transparent',
+                      opacity: currentImageIndex === index ? 1 : 0.6,
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    <img src={image} alt={`${product.name} thumbnail ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           
           <div className="detail-info">

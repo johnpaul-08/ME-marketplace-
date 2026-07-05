@@ -170,7 +170,7 @@ const CheckoutScreen = ({ user }) => {
           price: item.price,
           quantity: item.quantity,
           seller_id: item.seller_id || null,
-          image_url: item.image || item.image_url || null,
+          image_url: item.image || item.image_url || (item.images && item.images[0]) || null,
         })),
         subtotal_amount: parseFloat(groupSubtotal.toFixed(2)),
         shipping_fee: 0,

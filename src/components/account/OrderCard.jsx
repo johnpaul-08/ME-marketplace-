@@ -48,7 +48,7 @@ const OrderCard = ({ order, user }) => {
 
         <div className="order-header-right">
           {getStatusBadge(order.fulfillment_status)}
-          {getStatusBadge(order.payment_status)}
+          {/* {getStatusBadge(order.payment_status)} */}
         </div>
       </div>
 
