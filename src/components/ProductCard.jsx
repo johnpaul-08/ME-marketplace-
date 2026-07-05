@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import MoonRating from '../components/MoonRating';
 import { supabase } from '../supabase';
 import '../styles/ProductCard.css';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, showRemoveButton, onRemove }) => {
   const { addToCart } = useCart();
   const navigate = useNavigate();
 
@@ -66,7 +66,20 @@ const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className={`product-card${isOutOfStock ? ' out-of-stock-card' : ''}`}>
+    <div className={`product-card${isOutOfStock ? ' out-of-stock-card' : ''}`} style={{ position: 'relative' }}>
+      {showRemoveButton && (
+        <button 
+          className="remove-wishlist-btn" 
+          onClick={(e) => { 
+            e.preventDefault(); 
+            e.stopPropagation();
+            onRemove(product.id); 
+          }}
+          style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10, background: 'white', border: '1px solid #ddd', borderRadius: '50%', padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <X size={16} color="red" />
+        </button>
+      )}
       <Link to={`/product/${product.id}`} className="product-image">
         <img src={product.images?.[0] || 'https://placehold.co/300x400'} alt={product.name} />
         {isOutOfStock
@@ -82,7 +95,7 @@ const ProductCard = ({ product }) => {
           </button>
         )}
       </Link>
-      
+
       <div className="product-info">
         <Link to={`/product/${product.id}`}>
           <MoonRating rating={product.rating} count={128} />
