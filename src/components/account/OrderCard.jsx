@@ -48,7 +48,7 @@ const OrderCard = ({ order, user }) => {
 
         <div className="order-header-right">
           {getStatusBadge(order.fulfillment_status)}
-          {getStatusBadge(order.payment_status)}
+          {/* {getStatusBadge(order.payment_status)} */}
         </div>
       </div>
 
@@ -78,9 +78,9 @@ const OrderCard = ({ order, user }) => {
                 <p>Qty: {item.quantity || 1}</p>
 
                 <p className="price">₹{item.price ?? "--"}</p>
-                
+
                 {order.fulfillment_status?.toLowerCase() === "delivered" && (
-                  <button 
+                  <button
                     className="report-issue-btn"
                     onClick={() => handleReportClick(item)}
                     style={{
@@ -144,8 +144,8 @@ const OrderCard = ({ order, user }) => {
       </div>
 
       {selectedItemToReport && (
-        <ReportModal 
-          isOpen={reportModalOpen} 
+        <ReportModal
+          isOpen={reportModalOpen}
           onClose={() => setReportModalOpen(false)}
           order={order}
           item={selectedItemToReport}

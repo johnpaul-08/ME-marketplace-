@@ -47,7 +47,9 @@ const HomeScreen = () => {
         return;
       }
   
-      setCommunities(data);
+      // Filter out any seller that is an admin
+      const nonAdminCommunities = data.filter(community => community.is_admin !== true);
+      setCommunities(nonAdminCommunities);
   }
 
 
