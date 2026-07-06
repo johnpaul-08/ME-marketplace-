@@ -169,6 +169,7 @@ const ProductDetailScreen = () => {
                     <Share2 size={20} />
                   </button>
                 {product.images?.length > 1 && (
+                  <>
                   <button
                     className="view-all-images"
                     onClick={() => setShowGallery(true)}
