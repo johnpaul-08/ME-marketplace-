@@ -237,6 +237,7 @@ await fetchAddresses();
               <OrdersTab
                 orders={orders}
                 loadingOrders={loadingOrders}
+                user={user}
               />
             )}
 

@@ -1,6 +1,16 @@
-import { CreditCard, Truck } from "lucide-react";
+import { useState } from "react";
+import { CreditCard, Truck, AlertOctagon } from "lucide-react";
+import ReportModal from "./ReportModal";
 
-const OrderCard = ({ order }) => {
+const OrderCard = ({ order, user }) => {
+  const [reportModalOpen, setReportModalOpen] = useState(false);
+  const [selectedItemToReport, setSelectedItemToReport] = useState(null);
+
+  const handleReportClick = (item) => {
+    setSelectedItemToReport(item);
+    setReportModalOpen(true);
+  };
+
   const getStatusBadge = (status) => {
     if (!status) return null;
 
@@ -68,6 +78,30 @@ const OrderCard = ({ order }) => {
                 <p>Qty: {item.quantity || 1}</p>
 
                 <p className="price">₹{item.price ?? "--"}</p>
+                
+                {order.fulfillment_status?.toLowerCase() === "delivered" && (
+                  <button 
+                    className="report-issue-btn"
+                    onClick={() => handleReportClick(item)}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      marginTop: "8px",
+                      background: "transparent",
+                      border: "1px solid #ff4757",
+                      color: "#ff4757",
+                      padding: "4px 8px",
+                      borderRadius: "6px",
+                      fontSize: "0.8rem",
+                      cursor: "pointer",
+                      fontWeight: "500",
+                    }}
+                  >
+                    <AlertOctagon size={14} />
+                    Report Issue
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -108,6 +142,16 @@ const OrderCard = ({ order }) => {
           Total: <strong>₹{order.total_amount ?? "--"}</strong>
         </div>
       </div>
+
+      {selectedItemToReport && (
+        <ReportModal 
+          isOpen={reportModalOpen} 
+          onClose={() => setReportModalOpen(false)}
+          order={order}
+          item={selectedItemToReport}
+          user={user}
+        />
+      )}
     </div>
   );
 };
