@@ -59,7 +59,51 @@ const AccountScreen = ({ user, onLogout }) => {
         .select("*")
         .eq("customer_email", email)
         .order("created_at", { ascending: false });
-      if (!error && data) setOrders(data);
+
+      if (error || !data) {
+        setLoadingOrders(false);
+        return;
+      }
+
+      // Collect all product IDs from order items to fetch their images
+      const productIds = new Set();
+      data.forEach((order) => {
+        const items = Array.isArray(order.items) ? order.items : [];
+        items.forEach((item) => {
+          if (item.id) productIds.add(item.id);
+        });
+      });
+
+      // Batch-fetch product images
+      let productImageMap = {};
+      if (productIds.size > 0) {
+        const { data: products } = await supabase
+          .schema("marketplace_dataspace")
+          .from("products")
+          .select("id, images")
+          .in("id", [...productIds]);
+
+        if (products) {
+          products.forEach((p) => {
+            productImageMap[p.id] = p.images?.[0] || null;
+          });
+        }
+      }
+
+      // Merge images into order items
+      const enrichedOrders = data.map((order) => {
+        const items = Array.isArray(order.items) ? order.items : [];
+        return {
+          ...order,
+          items: items.map((item) => ({
+            ...item,
+            image_url:
+              item.image_url || item.image || productImageMap[item.id] || null,
+          })),
+        };
+      });
+
+      setOrders(enrichedOrders);
       setLoadingOrders(false);
     };
 

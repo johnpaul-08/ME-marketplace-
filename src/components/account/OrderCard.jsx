@@ -58,9 +58,9 @@ const OrderCard = ({ order, user }) => {
           {items.map((item, index) => (
             <div className="order-body" key={index}>
               <div className="order-img">
-                {(item.image_url || item.image) && (
+              {(item.image_url || item.image || item.images?.[0]) && (
                   <img
-                    src={item.image_url || item.image}
+                    src={item.image_url || item.image || item.images?.[0]}
                     alt={item.name || item.product_name}
                     style={{
                       width: "100%",

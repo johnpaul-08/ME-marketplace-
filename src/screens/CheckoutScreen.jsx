@@ -127,7 +127,7 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
       price: item.price,
       quantity: item.quantity,
       seller_id: item.seller_id || null,
-      image_url: item.image || item.image_url || null,
+      image_url: item.images?.[0] || item.image || item.image_url || null,
     })),
 
     subtotal_amount: parseFloat(groupSubtotal.toFixed(2)),
@@ -310,9 +310,9 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
               ) : (
                 cartItems.map((item) => (
                   <div className="mini-item" key={item.id}>
-                    {(item.image || item.image_url) && (
+                    {(item.images?.[0] || item.image || item.image_url) && (
                       <img
-                        src={item.image || item.image_url}
+                        src={item.images?.[0] || item.image || item.image_url}
                         alt={item.name}
                         style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '6px', flexShrink: 0 }}
                       />
