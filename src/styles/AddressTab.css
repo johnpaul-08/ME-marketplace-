@@ -9,7 +9,7 @@
   padding: 10px 18px;
   border: none;
   border-radius: 8px;
-  background: #c0392b;
+  background: var(--accent);
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -17,7 +17,7 @@
 }
 
 .add-address-btn:hover {
-  background: #a93226;
+  background: var(--accent-hover);
 }
 
 .address-form-wrapper {
@@ -27,20 +27,21 @@
 .cancel-btn {
   margin-top: 15px;
   padding: 10px 18px;
-  border: 1px solid #ccc;
-  background: white;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
   border-radius: 8px;
   cursor: pointer;
+  color: var(--text-primary);
 }
 
 .cancel-btn:hover {
-  background: #f5f5f5;
+  background: var(--bg-secondary);
 }
 
 .address-empty {
   text-align: center;
   padding: 60px 20px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .address-list {

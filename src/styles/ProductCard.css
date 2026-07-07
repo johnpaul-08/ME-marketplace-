@@ -140,7 +140,7 @@
 
 .old-price {
   text-decoration: line-through;
-  color: #999;
+  color: var(--text-secondary);
   font-size: 0.9rem;
 }
 

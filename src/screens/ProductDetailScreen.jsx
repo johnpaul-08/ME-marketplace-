@@ -178,7 +178,7 @@ const ProductDetailScreen = () => {
                   </button>
                   <button 
                     onClick={handleNextImage}
-                    style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', background: 'rgba(255,255,255,0.8)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', fontSize: '18px', color: '#333' }}
+                    style={{ position: 'absolute', top: '50%', right: '10px', transform: 'translateY(-50%)', background: 'var(--bg-primary)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', fontSize: '18px', color: 'var(--text-primary)' }}
                   >
                     ❯
                   </button>
@@ -217,7 +217,7 @@ const ProductDetailScreen = () => {
             <MoonRating rating={averageRating} count={reviews.length} />
             <div className="price-tag">
               <span className="current-price">₹{product.price}</span>
-              {product.oldPrice && <span className="old-price" style={{ marginLeft: '15px', textDecoration: 'line-through', color: '#999', fontSize: '1.5rem' }}>₹{product.oldPrice}</span>}
+              {product.oldPrice && <span className="old-price" style={{ marginLeft: '15px', textDecoration: 'line-through', color: 'var(--text-secondary)', fontSize: '1.5rem' }}>₹{product.oldPrice}</span>}
             </div>
             
             <p className="description">

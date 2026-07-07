@@ -37,7 +37,7 @@
 }
 
 .splash-text p {
-  color: var(--me-maroon);
+  color: var(--text-primary);
   letter-spacing: 5px;
   font-size: 0.8rem;
   margin-bottom: 5px;

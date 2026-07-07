@@ -16,8 +16,7 @@
 .hero-title {
   font-size: 5rem;
   line-height: 1.1;
-  margin-bottom: 20px;
-  color: var(--me-maroon);
+  color: var(--text-primary);
 }
 
 .accent-text {
@@ -59,8 +58,8 @@
 }
 
 .secondary-btn {
-  border: 2px solid var(--me-maroon);
-  color: var(--me-maroon);
+  border: 2px solid var(--text-primary);
+  color: var(--text-primary);
   padding: 15px 40px;
   border-radius: 6px;
   font-weight: 700;
@@ -70,9 +69,9 @@
 }
 
 .secondary-btn:hover {
-  background: var(--me-maroon);
-  border-color: var(--me-maroon);
-  color: #ffffff;
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  color: var(--bg-primary);
   transform: translateY(-3px);
   box-shadow: 0 8px 24px rgba(70, 23, 17, 0.25);
 }

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, ShoppingBag, User, Menu, X, Bell } from 'lucide-react';
+import { Search, ShoppingBag, User, Menu, X, Bell, Sun, Moon } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useNotifications } from '../context/NotificationContext';
+import { useTheme } from '../context/ThemeContext';
 import Logo from './Logo';
 import '../styles/Header.css';
 
@@ -12,6 +13,7 @@ const Header = ({ isLoggedIn = false }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const { cartCount } = useCart();
   const { unreadCount } = useNotifications();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleSearch = (e) => {
@@ -55,6 +57,15 @@ const Header = ({ isLoggedIn = false }) => {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </form>
+
+          <button
+            className="icon-btn theme-toggle-btn"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          >
+            {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
+          </button>
 
           {isLoggedIn ? (
             <>

@@ -12,7 +12,7 @@
   width: 420px;
   max-width: 100%;
   height: 100vh;
-  background: #fff;
+  background: var(--bg-primary);
   display: flex;
   flex-direction: column;
   box-shadow: -6px 0 20px rgba(0,0,0,0.15);
@@ -34,13 +34,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 18px 22px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
 }
 
 .drawer-close-btn {
   background: none;
   border: none;
   cursor: pointer;
+  color: var(--text-primary);
 }
 
 .drawer-body {
@@ -50,7 +51,7 @@
 }
 
 .drawer-address-card {
-  border: 2px solid #e5e5e5;
+  border: 2px solid var(--border);
   border-radius: 10px;
   padding: 16px;
   margin-bottom: 16px;
@@ -59,12 +60,12 @@
 }
 
 .drawer-address-card:hover {
-  border-color: #ff7612;
+  border-color: var(--accent);
 }
 
 .drawer-address-card.selected {
-  border-color: #ff7612;
-  background: rgba(255,118,18,.06);
+  border-color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .drawer-card-top {
@@ -79,7 +80,7 @@
 }
 
 .default-badge {
-  background: #ff7612;
+  background: var(--accent);
   color: #fff;
   font-size: .75rem;
   padding: 3px 8px;
@@ -91,7 +92,7 @@
   display: flex;
   gap: 8px;
   margin-top: 8px;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .selected-indicator {
@@ -99,19 +100,19 @@
   align-items: center;
   gap: 6px;
   margin-top: 12px;
-  color: #ff7612;
+  color: var(--accent);
   font-weight: 600;
 }
 
 .drawer-footer {
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border);
   padding: 18px;
 }
 
 .drawer-done-btn {
   width: 100%;
   padding: 14px;
-  background: #ff7612;
+  background: var(--accent);
   color: white;
   border: none;
   border-radius: 8px;
@@ -122,6 +123,6 @@
 
 .drawer-empty {
   text-align: center;
-  color: #777;
+  color: var(--text-secondary);
   padding: 60px 20px;
 }

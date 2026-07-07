@@ -24,7 +24,7 @@ const Logo = ({ className, isSplash }) => {
           fontSize: "25px",
           fontWeight: "700",
           letterSpacing: "1px",
-          color: "#461711",
+          color: "var(--text-primary)",
         }}
       >
         ME Marketplace

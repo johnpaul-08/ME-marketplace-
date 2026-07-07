@@ -3,25 +3,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--me-cream);
+  background: var(--bg-secondary);
   padding: 120px 20px 80px;
 }
 
 .auth-card {
-  background: #ffffff;
+  background: var(--bg-primary);
   padding: 50px;
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(70, 23, 17, 0.12);
+  box-shadow: var(--shadow);
   width: 100%;
   max-width: 450px;
   text-align: center;
-  border: 1px solid var(--me-cream-border);
+  border: 1px solid var(--border);
 }
 
 .auth-card h2 {
   font-size: 2rem;
   margin-bottom: 10px;
-  color: var(--me-maroon);
+  color: var(--text-primary);
 }
 
 .auth-card p {
@@ -33,8 +33,8 @@
   display: flex;
   align-items: center;
   gap: 15px;
-  border: 1.5px solid var(--me-cream-border);
-  background: var(--me-cream);
+  border: 1.5px solid var(--border);
+  background: var(--input-bg);
   padding: 12px 20px;
   border-radius: 8px;
   margin-bottom: 20px;
@@ -43,7 +43,7 @@
 
 .input-group:focus-within {
   border-color: var(--me-orange);
-  background: #ffffff;
+  background: var(--bg-primary);
   box-shadow: 0 0 0 3px rgba(255, 118, 18, 0.12);
 }
 
@@ -53,11 +53,11 @@
   flex-grow: 1;
   background: transparent;
   font-size: 1rem;
-  color: var(--me-maroon);
+  color: var(--text-primary);
 }
 
 .input-group input::placeholder {
-  color: #BBA898;
+  color: var(--text-secondary);
 }
 
 .auth-options {
@@ -102,6 +102,6 @@
 }
 
 .auth-footer a {
-  color: var(--me-maroon);
+  color: var(--accent);
   font-weight: 700;
 }
