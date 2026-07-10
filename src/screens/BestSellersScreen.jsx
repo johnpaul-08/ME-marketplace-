@@ -18,7 +18,8 @@ const BestSellersScreen = () => {
       const {data, error} = await supabase
       .schema('marketplace_dataspace')
       .from('products')
-      .select('*');
+      .select('*')
+      .order("sales_count", { ascending: false });
   
       if (error){
         console.error(error);
