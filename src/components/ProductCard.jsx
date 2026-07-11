@@ -98,7 +98,7 @@ const ProductCard = ({ product, showRemoveButton, onRemove }) => {
 
       <div className="product-info">
         <Link to={`/product/${product.id}`}>
-          <MoonRating rating={product.rating} count={128} />
+          <MoonRating rating={product.average_rating} count={product.rating_count} />
           <h3 className="product-name">{product.name}</h3>
           <p className="product-category">{product.category}</p>
         </Link>

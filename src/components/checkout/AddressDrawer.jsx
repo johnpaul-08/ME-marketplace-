@@ -1,5 +1,7 @@
 import { X, MapPin, Phone, Check } from "lucide-react";
+import { useState } from "react";
 import "../../styles/AddressDrawer.css";
+import AddressForm from "../account/AddressForm";
 
 const AddressDrawer = ({
   isOpen,
@@ -7,8 +9,15 @@ const AddressDrawer = ({
   addresses,
   selectedAddress,
   onSelect,
+  onAddAddress,
 }) => {
   if (!isOpen) return null;
+
+  const [showForm, setShowForm] = useState(false);
+  const handleSubmit = async (data) => {
+    await onAddAddress(data);
+    setShowForm(false);
+  };
 
   return (
     <>
@@ -27,7 +36,8 @@ const AddressDrawer = ({
             <X size={22} />
           </button>
         </div>
-
+      {showForm ? (
+        <AddressForm title="Add Address" onSubmit={handleSubmit}/>):(
         <div className="drawer-body">
           {addresses.length === 0 ? (
             <div className="drawer-empty">
@@ -87,13 +97,14 @@ const AddressDrawer = ({
             })
           )}
         </div>
+        )}
 
         <div className="drawer-footer">
           <button
             className="drawer-done-btn"
-            onClick={onClose}
+            onClick={() => setShowForm(true)}
           >
-            Done
+            + Add New Address
           </button>
         </div>
       </div>

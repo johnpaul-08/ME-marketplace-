@@ -65,6 +65,48 @@ const CheckoutScreen = ({ user }) => {
         setSelectedAddress(defaultAddr);
       }
     }, [savedAddresses]);
+
+const handleAddAddress = async (address) => {
+  // Reset previous default address if needed
+  if (address.is_default) {
+    const { error: resetError } = await supabase
+      .schema("marketplace_dataspace")
+      .from("buyer_addresses")
+      .update({ is_default: false })
+      .eq("buyer_id", user.id);
+
+    if (resetError) {
+      console.error(resetError);
+      return;
+    }
+  }
+
+  // Insert new address and return it
+  const { data, error } = await supabase
+    .schema("marketplace_dataspace")
+    .from("buyer_addresses")
+    .insert({
+      ...address,
+      buyer_id: user.id,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  // Update Checkout state
+  setSavedAddresses(prev => [data, ...prev]);
+
+  // Automatically select the new address
+  setSelectedAddress(data);
+
+  // Close drawer
+  setDrawerOpen(false);
+};
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -110,6 +152,9 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
     (sum, i) => sum + i.price * i.quantity,
     0
   );
+
+
+
 
   const groupTax = parseFloat((groupSubtotal * 0.05).toFixed(2));
   const groupTotal = parseFloat((groupSubtotal + groupTax).toFixed(2));
@@ -345,6 +390,7 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
             setSelectedAddress(address);
             setDrawerOpen(false);
           }}
+          onAddAddress={handleAddAddress}
         />
     </div>
   );
