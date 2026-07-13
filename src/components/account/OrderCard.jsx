@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CreditCard, Truck, AlertOctagon } from "lucide-react";
 import ReportModal from "./ReportModal";
+import ReviewModal from "./ReviewModal";
 
-const OrderCard = ({ order, user }) => {
+const OrderCard = ({ order, user, reviewsMap, onReviewSubmitted }) => {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [selectedItemToReport, setSelectedItemToReport] = useState(null);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [selectedItemToReview, setSelectedItemToReview] = useState(null);
+
+const handleReviewClick = (item) => {
+  setSelectedItemToReview(item);
+  setReviewModalOpen(true);
+};
 
   const handleReportClick = (item) => {
     setSelectedItemToReport(item);
@@ -52,13 +60,17 @@ const OrderCard = ({ order, user }) => {
         </div>
       </div>
 
-      {/* Products */}
-      {items.length > 0 ? (
-        <div className="order-items-list">
-          {items.map((item, index) => (
+    {/* Products */}
+    {items.length > 0 ? (
+      <div className="order-items-list">
+        {items.map((item, index) => {
+          const alreadyReviewed =
+            reviewsMap?.[`${order.id}-${item.id}`] ?? false;
+
+          return (
             <div className="order-body" key={index}>
               <div className="order-img">
-              {(item.image_url || item.image || item.images?.[0]) && (
+                {(item.image_url || item.image || item.images?.[0]) && (
                   <img
                     src={item.image_url || item.image || item.images?.[0]}
                     alt={item.name || item.product_name}
@@ -80,42 +92,53 @@ const OrderCard = ({ order, user }) => {
                 <p className="price">₹{item.price ?? "--"}</p>
 
                 {order.fulfillment_status?.toLowerCase() === "delivered" && (
-                  <button
-                    className="report-issue-btn"
-                    onClick={() => handleReportClick(item)}
+                  <div
                     style={{
                       display: "flex",
-                      alignItems: "center",
-                      gap: "5px",
+                      gap: "8px",
                       marginTop: "8px",
-                      background: "transparent",
-                      border: "1px solid #ff4757",
-                      color: "#ff4757",
-                      padding: "4px 8px",
-                      borderRadius: "6px",
-                      fontSize: "0.8rem",
-                      cursor: "pointer",
-                      fontWeight: "500",
                     }}
                   >
-                    <AlertOctagon size={14} />
-                    Report Issue
-                  </button>
+                    {alreadyReviewed ? (
+                      <button
+                        className="reviewed-btn"
+                        disabled
+                      >
+                        ✓ Reviewed
+                      </button>
+                    ) : (
+                      <button
+                        className="review-btn"
+                        onClick={() => handleReviewClick(item)}
+                      >
+                        ⭐ Rate & Review
+                      </button>
+                    )}
+
+                    <button
+                      className="report-issue-btn"
+                      onClick={() => handleReportClick(item)}
+                    >
+                      <AlertOctagon size={14} />
+                      Report Issue
+                    </button>
+                  </div>
                 )}
               </div>
             </div>
-          ))}
-        </div>
-      ) : (
-        <p
-          style={{
-            color: "var(--text-secondary)",
-            margin: "12px 0",
-          }}
-        >
-          No item details available.
-        </p>
-      )}
+          );
+        })}
+      </div>
+    ) : (
+      <p
+        style={{
+          color: "var(--text-secondary)",
+          margin: "12px 0",
+        }}
+      >
+        No item details available.
+      </p>
+    )}
 
       {/* Footer */}
       <div className="order-footer">
@@ -150,6 +173,18 @@ const OrderCard = ({ order, user }) => {
           order={order}
           item={selectedItemToReport}
           user={user}
+        />
+      )}
+      {selectedItemToReview && (
+        <ReviewModal
+          isOpen={reviewModalOpen}
+          onClose={() => setReviewModalOpen(false)}
+          order={order}
+          item={selectedItemToReview}
+          user={user}
+          onReviewSubmitted={() =>
+            onReviewSubmitted(order.id, selectedItemToReview.id)
+          }
         />
       )}
     </div>

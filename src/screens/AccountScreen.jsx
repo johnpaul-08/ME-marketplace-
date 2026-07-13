@@ -22,6 +22,7 @@ const AccountScreen = ({ user, onLogout }) => {
   const [addresses, setAddresses] = useState([]);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
   const [buyer, setBuyer] = useState(null);
+  const [reviewsMap, setReviewsMap] = useState({});
 
   const displayName =
     buyer?.name ||
@@ -64,8 +65,33 @@ const AccountScreen = ({ user, onLogout }) => {
     setLoadingAddresses(false);
   };
 
+        const fetchReviews = async () => {
+        if (!user?.id) return;
+
+        const { data, error } = await supabase
+          .schema("marketplace_dataspace")
+          .from("product_reviews")
+          .select("product_id, order_id")
+          .eq("buyer_id", user.id);
+
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+        const map = {};
+
+        data.forEach((review) => {
+          map[`${review.order_id}-${review.product_id}`] = true;
+        });
+
+        setReviewsMap(map);
+      };
+
+
   useEffect(() => {
     if (!email) return;
+
 
     const fetchOrders = async () => {
       setLoadingOrders(true);
@@ -80,6 +106,8 @@ const AccountScreen = ({ user, onLogout }) => {
         setLoadingOrders(false);
         return;
       }
+
+
 
       // Collect all product IDs from order items to fetch their images
       const productIds = new Set();
@@ -126,6 +154,7 @@ const AccountScreen = ({ user, onLogout }) => {
     fetchBuyer();
     fetchOrders();
     fetchAddresses();
+    fetchReviews();
   }, [user]);
 
   // ── Address handlers ─────────────────────────────────────────────────────────
@@ -198,6 +227,15 @@ const AccountScreen = ({ user, onLogout }) => {
     fetchAddresses();
   };
 
+  //___ review____________________________________________________________________
+
+  const handleReviewSubmitted = (orderId, productId) => {
+    setReviewsMap((prev) => ({
+      ...prev,
+      [`${orderId}-${productId}`]: true,
+    }));
+  };
+
   // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
@@ -265,6 +303,8 @@ const AccountScreen = ({ user, onLogout }) => {
                 orders={orders}
                 loadingOrders={loadingOrders}
                 user={user}
+                reviewsMap={reviewsMap}
+                onReviewSubmitted={handleReviewSubmitted}
               />
             )}
 
