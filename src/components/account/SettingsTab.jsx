@@ -32,11 +32,14 @@ const SettingsTab = ({ user, buyer, onProfileUpdated }) => {
     let emailError = null;
 
     if (newEmail !== user.email) {
-      const { error } = await supabase.auth.updateUser({
-        email: newEmail,
-      });
+ const { data, error } = await supabase.auth.updateUser({
+  email: newEmail,
+});
 
-      emailError = error;
+console.log("Update User Data:", data);
+console.log("Update User Error:", error);
+
+emailError = error;
     }
 
     setLoading(false);
@@ -56,7 +59,10 @@ const SettingsTab = ({ user, buyer, onProfileUpdated }) => {
 
     onProfileUpdated();
     setEditing(false);
+
+    
   };
+  
 
   return (
     <div className="settings-tab">
