@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Package,
   MapPin,
   Settings,
   LogOut,
   Heart,
+  Bell,
 } from "lucide-react";
 import BackButton from "../components/BackButton";
 import { supabase } from "../supabase";
@@ -13,16 +15,19 @@ import OrdersTab from "../components/account/OrdersTab";
 import WishlistTab from "../components/account/wishlistTab";
 import AddressTab from "../components/account/AddressTab";
 import SettingsTab from "../components/account/settingsTab";
+import NotificationInboxTab from "../components/NotificationInboxTab";
 import "../styles/Account.css";
 
 const AccountScreen = ({ user, onLogout }) => {
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
-  const [activeTab, setActiveTab] = useState("orders");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState( searchParams.get("tab") || "orders");
   const [addresses, setAddresses] = useState([]);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
   const [buyer, setBuyer] = useState(null);
   const [reviewsMap, setReviewsMap] = useState({});
+
 
   const displayName =
     buyer?.name ||
@@ -236,6 +241,15 @@ const AccountScreen = ({ user, onLogout }) => {
     }));
   };
 
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
   // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
@@ -255,9 +269,18 @@ const AccountScreen = ({ user, onLogout }) => {
             </div>
 
             <nav className="account-nav">
+
+              <button
+                className={activeTab === "notifications" ? "active" : ""}
+                onClick={() => { setActiveTab("notifications");  setSearchParams({ tab: "notifications" });}}
+              >
+                <Bell size={18} />
+                Notification
+              </button>
+
               <button
                 className={activeTab === "orders" ? "active" : ""}
-                onClick={() => setActiveTab("orders")}
+                onClick={() => { setActiveTab("orders");  setSearchParams({ tab: "orders" });}}
               >
                 <Package size={18} />
                 My Orders
@@ -265,7 +288,7 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "wishlist" ? "active" : ""}
-                onClick={() => setActiveTab("wishlist")}
+                onClick={() => { setActiveTab("wishlist");  setSearchParams({ tab: "wishlist" });}}
               >
                 <Heart size={18} />
                 Wishlist
@@ -273,7 +296,7 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "addresses" ? "active" : ""}
-                onClick={() => setActiveTab("addresses")}
+                onClick={() => { setActiveTab("addresses");  setSearchParams({ tab: "addresses" });}}
               >
                 <MapPin size={18} />
                 Addresses
@@ -281,7 +304,7 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "settings" ? "active" : ""}
-                onClick={() => setActiveTab("settings")}
+                onClick={() => { setActiveTab("settings");  setSearchParams({ tab: "settings" });}}
               >
                 <Settings size={18} />
                 Settings
@@ -296,6 +319,11 @@ const AccountScreen = ({ user, onLogout }) => {
 
           {/* Main Content */}
           <main className="account-content">
+
+            {/* NOTIFICATIONS */}
+            {activeTab === "notifications" && (
+              <NotificationInboxTab />
+            )}
 
             {/* ORDERS */}
             {activeTab === "orders" && (
