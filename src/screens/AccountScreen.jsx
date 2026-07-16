@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   Package,
   MapPin,
   Settings,
   LogOut,
   Heart,
+  Bell,
 } from "lucide-react";
 import BackButton from "../components/BackButton";
 import { supabase } from "../supabase";
@@ -12,18 +14,23 @@ import { useWishlist } from "../context/wishlistContext";
 import OrdersTab from "../components/account/OrdersTab";
 import WishlistTab from "../components/account/wishlistTab";
 import AddressTab from "../components/account/AddressTab";
+import SettingsTab from "../components/account/settingsTab";
+import NotificationInboxTab from "../components/NotificationInboxTab";
 import "../styles/Account.css";
 
 const AccountScreen = ({ user, onLogout }) => {
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
-  const [activeTab, setActiveTab] = useState("orders");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "orders");
   const [addresses, setAddresses] = useState([]);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
+  const [buyer, setBuyer] = useState(null);
+  const [reviewsMap, setReviewsMap] = useState({});
+
 
   const displayName =
-    user?.user_metadata?.full_name ||
-    user?.user_metadata?.name ||
+    buyer?.name ||
     user?.email?.split("@")[0] ||
     "User";
   const avatarLetter = displayName.charAt(0).toUpperCase();
@@ -31,22 +38,21 @@ const AccountScreen = ({ user, onLogout }) => {
 
   const { wishlist, removeFromWishlist } = useWishlist();
 
-  const fetchOrders = async () => {
-    if (!email) return;
-    setLoadingOrders(true);
+  // ── Data fetching ────────────────────────────────────────────────────────────
+
+  const fetchBuyer = async () => {
+    if (!user?.id) return;
 
     const { data, error } = await supabase
       .schema("marketplace_dataspace")
-      .from("orders")
+      .from("buyers")
       .select("*")
-      .eq("customer_email", email)
-      .order("created_at", { ascending: false });
+      .eq("id", user.id)
+      .single();
 
-    if (!error && data) {
-      setOrders(data);
+    if (!error) {
+      setBuyer(data);
     }
-
-    setLoadingOrders(false);
   };
 
   const fetchAddresses = async () => {
@@ -66,9 +72,96 @@ const AccountScreen = ({ user, onLogout }) => {
     setLoadingAddresses(false);
   };
 
+  const fetchReviews = async () => {
+    if (!user?.id) return;
+
+    const { data, error } = await supabase
+      .schema("marketplace_dataspace")
+      .from("product_reviews")
+      .select("product_id, order_id")
+      .eq("buyer_id", user.id);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const map = {};
+
+    data.forEach((review) => {
+      map[`${review.order_id}-${review.product_id}`] = true;
+    });
+
+    setReviewsMap(map);
+  };
+
+
   useEffect(() => {
+    if (!email) return;
+
+
+    const fetchOrders = async () => {
+      setLoadingOrders(true);
+      const { data, error } = await supabase
+        .schema("marketplace_dataspace")
+        .from("orders")
+        .select("*")
+        .eq("buyer_id", user.id)
+        .order("created_at", { ascending: false });
+
+      if (error || !data) {
+        setLoadingOrders(false);
+        return;
+      }
+
+
+
+      // Collect all product IDs from order items to fetch their images
+      const productIds = new Set();
+      data.forEach((order) => {
+        const items = Array.isArray(order.items) ? order.items : [];
+        items.forEach((item) => {
+          if (item.id) productIds.add(item.id);
+        });
+      });
+
+      // Batch-fetch product images
+      let productImageMap = {};
+      if (productIds.size > 0) {
+        const { data: products } = await supabase
+          .schema("marketplace_dataspace")
+          .from("products")
+          .select("id, images")
+          .in("id", [...productIds]);
+
+        if (products) {
+          products.forEach((p) => {
+            productImageMap[p.id] = p.images?.[0] || null;
+          });
+        }
+      }
+
+      // Merge images into order items
+      const enrichedOrders = data.map((order) => {
+        const items = Array.isArray(order.items) ? order.items : [];
+        return {
+          ...order,
+          items: items.map((item) => ({
+            ...item,
+            image_url:
+              item.image_url || item.image || productImageMap[item.id] || null,
+          })),
+        };
+      });
+
+      setOrders(enrichedOrders);
+      setLoadingOrders(false);
+    };
+
+    fetchBuyer();
     fetchOrders();
     fetchAddresses();
+    fetchReviews();
   }, [user]);
 
   const handleAddAddress = async (address) => {
@@ -174,6 +267,27 @@ const AccountScreen = ({ user, onLogout }) => {
     }
     await fetchAddresses();
   };
+
+  //___ review____________________________________________________________________
+
+  const handleReviewSubmitted = (orderId, productId) => {
+    setReviewsMap((prev) => ({
+      ...prev,
+      [`${orderId}-${productId}`]: true,
+    }));
+  };
+
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
+
+  // ── Render ───────────────────────────────────────────────────────────────────
+
   return (
     <div className="section account-page" style={{ paddingTop: "120px" }}>
       <div className="container">
@@ -192,9 +306,18 @@ const AccountScreen = ({ user, onLogout }) => {
             </div>
 
             <nav className="account-nav">
+
+              <button
+                className={activeTab === "notifications" ? "active" : ""}
+                onClick={() => { setActiveTab("notifications"); setSearchParams({ tab: "notifications" }); }}
+              >
+                <Bell size={18} />
+                Notification
+              </button>
+
               <button
                 className={activeTab === "orders" ? "active" : ""}
-                onClick={() => setActiveTab("orders")}
+                onClick={() => { setActiveTab("orders"); setSearchParams({ tab: "orders" }); }}
               >
                 <Package size={18} />
                 My Orders
@@ -202,7 +325,7 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "wishlist" ? "active" : ""}
-                onClick={() => setActiveTab("wishlist")}
+                onClick={() => { setActiveTab("wishlist"); setSearchParams({ tab: "wishlist" }); }}
               >
                 <Heart size={18} />
                 Wishlist
@@ -210,13 +333,16 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "addresses" ? "active" : ""}
-                onClick={() => setActiveTab("addresses")}
+                onClick={() => { setActiveTab("addresses"); setSearchParams({ tab: "addresses" }); }}
               >
                 <MapPin size={18} />
                 Addresses
               </button>
 
-              <button>
+              <button
+                className={activeTab === "settings" ? "active" : ""}
+                onClick={() => { setActiveTab("settings"); setSearchParams({ tab: "settings" }); }}
+              >
                 <Settings size={18} />
                 Settings
               </button>
@@ -231,13 +357,19 @@ const AccountScreen = ({ user, onLogout }) => {
           {/* Main Content */}
           <main className="account-content">
 
-            {/* ================= ORDERS ================= */}
+            {/* NOTIFICATIONS */}
+            {activeTab === "notifications" && (
+              <NotificationInboxTab />
+            )}
 
+            {/* ORDERS */}
             {activeTab === "orders" && (
               <OrdersTab
                 orders={orders}
                 loadingOrders={loadingOrders}
                 user={user}
+                reviewsMap={reviewsMap}
+                onReviewSubmitted={handleReviewSubmitted}
               />
             )}
 
@@ -261,6 +393,16 @@ const AccountScreen = ({ user, onLogout }) => {
                 onSetDefault={handleSetDefaultAddress}
               />
             )}
+
+            {/* SETTINGS */}
+            {activeTab === "settings" && (
+              <SettingsTab
+                user={user}
+                buyer={buyer}
+                onProfileUpdated={fetchBuyer}
+              />
+            )}
+
           </main>
         </div>
       </div>

@@ -17,17 +17,25 @@ const BestSellersScreen = () => {
       setLoading(true);
       const {data, error} = await supabase
       .schema('marketplace_dataspace')
-      .from('products')
-      .select('*')
-      .order("sales_count", { ascending: false });
+      .from('featured_products')
+      .select(`
+        display_order,
+        products:product_id (*)
+      `)
+      .eq("is_active", true)
+      .order("display_order", { ascending: true });
   
       if (error){
         console.error(error);
         setLoading(false);
         return;
       }
-      setProducts(data);
-      setLoading(false);
+      const featuredProducts = data
+      .map(item => item.products)
+      .filter(Boolean);
+
+        setProducts(featuredProducts);
+        setLoading(false);
     }
     
   return (

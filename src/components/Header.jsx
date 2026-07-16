@@ -69,7 +69,7 @@ const Header = ({ isLoggedIn = false }) => {
 
           {isLoggedIn ? (
             <>
-              <Link to="/account" className="icon-btn profile-btn"><User size={22} /></Link>
+              <Link to="/account?tab=settings" className="icon-btn profile-btn"><User size={22} /></Link>
               <Link to="/account?tab=notifications" className="icon-btn header-notif-btn" title="Notifications" id="header-notifications-btn">
                 <Bell size={22} />
                 {unreadCount > 0 && (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { CreditCard, Smartphone, Banknote, Loader, MapPin } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
@@ -11,7 +11,7 @@ import AddressDrawer from "../components/checkout/AddressDrawer";
 
 
 const CheckoutScreen = ({ user }) => {
-  const { cartItems, cartTotal, clearCart } = useCart();
+  const { cartItems, clearCart } = useCart();
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { addNotification } = useNotifications();
@@ -21,16 +21,25 @@ const CheckoutScreen = ({ user }) => {
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [fetchingAddresses, setFetchingAddresses] = useState(true);
 
+  const location = useLocation();
+  const buyNowItem = location.state?.buyNowItem;
+  const checkoutItems = buyNowItem
+  ? [buyNowItem]
+  : cartItems;
+  const subtotal = checkoutItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+const taxAmount = parseFloat((subtotal * 0.05).toFixed(2));
+const totalAmount = parseFloat((subtotal + taxAmount).toFixed(2));
+
   const [form, setForm] = useState({
     paymentMethod: 'Credit Card',
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-
-  // Summary display values (across all items)
-  const taxAmount = parseFloat((cartTotal * 0.05).toFixed(2));
-  const totalAmount = parseFloat((cartTotal + taxAmount).toFixed(2));
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -111,7 +120,7 @@ const handleAddAddress = async (address) => {
     e.preventDefault();
     setError('');
 
-    if (cartItems.length === 0) {
+    if (checkoutItems.length === 0) {
       setError('Your cart is empty.');
       return;
     }
@@ -140,7 +149,7 @@ const handleAddAddress = async (address) => {
 
     // Group cart items by seller_id — one order per seller
     const sellerGroups = {};
-    cartItems.forEach((item) => {
+    checkoutItems.forEach((item) => {
       const sid = item.seller_id || 'no_seller';
       if (!sellerGroups[sid]) sellerGroups[sid] = [];
       sellerGroups[sid].push(item);
@@ -162,6 +171,7 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
   return {
     seller_id: sid === 'no_seller' ? null : sid,
     customer_name: customerName,
+    buyer_id: user.id,
     customer_email: user?.email || '',
     customer_phone: customerPhone,
     shipping_address: finalShippingAddress,
@@ -200,7 +210,9 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
       return;
     }
 
-    clearCart();
+    if (!buyNowItem) {
+      clearCart();
+    }
 
     // ── Fire order notifications (optimistic — updates badge instantly) ──
     const method = form.paymentMethod || 'Online';
@@ -339,7 +351,7 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
               <button
                 type="submit"
                 className="complete-order-btn"
-                disabled={loading || cartItems.length === 0}
+                disabled={loading || checkoutItems.length === 0}
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
               >
                 {loading ? <><Loader size={18} className="spin" /> Placing Order…</> : 'Complete Order'}
@@ -350,10 +362,12 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
             <div className="order-summary-side">
               <h3>Your Order</h3>
 
-              {cartItems.length === 0 ? (
-                <p style={{ color: 'var(--text-secondary)' }}>Your cart is empty.</p>
+              {checkoutItems.length === 0 ? (
+                <p style={{ color: "var(--text-secondary)" }}>
+                  No items to checkout.
+                </p>
               ) : (
-                cartItems.map((item) => (
+                checkoutItems.map((item) => (
                   <div className="mini-item" key={item.id}>
                     {(item.images?.[0] || item.image || item.image_url) && (
                       <img
@@ -372,7 +386,7 @@ const orderPayloads = Object.entries(sellerGroups).map(([sid, groupItems]) => {
               )}
 
               <div className="summary-details">
-                <div className="row"><span>Subtotal</span> <span>₹{cartTotal.toFixed(2)}</span></div>
+                <div className="row"><span>Subtotal</span> <span>₹{subtotal.toFixed(2)}</span></div>
                 <div className="row"><span>Shipping</span> <span>FREE</span></div>
                 <div className="row"><span>Tax (5%)</span> <span>₹{taxAmount.toFixed(2)}</span></div>
                 <div className="row total"><span>Total</span> <span>₹{totalAmount.toFixed(2)}</span></div>
