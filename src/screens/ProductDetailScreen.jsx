@@ -231,7 +231,7 @@ const ProductDetailScreen = () => {
             <div className="action-btns">
               <button className="add-to-cart-big" onClick={handleAddToCart}>
                 <ShoppingCart size={20} /> Add to Cart
-              </button>
+              </button>``
               <button className="buy-now-big" onClick={handleBuyNow}>
                 Buy Now
               </button>
