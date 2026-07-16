@@ -5,6 +5,7 @@ import {
   Settings,
   LogOut,
   Heart,
+  Bell,
 } from "lucide-react";
 import BackButton from "../components/BackButton";
 import { supabase } from "../supabase";
@@ -13,6 +14,7 @@ import OrdersTab from "../components/account/OrdersTab";
 import WishlistTab from "../components/account/wishlistTab";
 import AddressTab from "../components/account/AddressTab";
 import SettingsTab from "../components/account/settingsTab";
+import NotificationInboxTab from "../components/NotificationInboxTab";
 import "../styles/Account.css";
 
 const AccountScreen = ({ user, onLogout }) => {
@@ -255,6 +257,15 @@ const AccountScreen = ({ user, onLogout }) => {
             </div>
 
             <nav className="account-nav">
+
+              <button
+                className={activeTab === "notifications" ? "active" : ""}
+                onClick={() => setActiveTab("notifications")}
+              >
+                <Bell size={18} />
+                Notification
+              </button>
+
               <button
                 className={activeTab === "orders" ? "active" : ""}
                 onClick={() => setActiveTab("orders")}
@@ -296,6 +307,11 @@ const AccountScreen = ({ user, onLogout }) => {
 
           {/* Main Content */}
           <main className="account-content">
+
+            {/* NOTIFICATIONS */}
+            {activeTab === "notifications" && (
+              <NotificationInboxTab />
+            )}
 
             {/* ORDERS */}
             {activeTab === "orders" && (
