@@ -3,7 +3,7 @@
    ============================================================ */
 
 /* ---------- Toggle Switch ---------- */
-.toggle-switch {
+/* .toggle-switch {
   position: relative;
   display: inline-block;
   width: 48px;
@@ -45,10 +45,10 @@ input:checked + .toggle-slider {
 
 input:checked + .toggle-slider::before {
   transform: translateX(22px);
-}
+} */
 
 /* ---------- Notification Settings Page ---------- */
-.notif-settings {
+/* .notif-settings {
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -62,10 +62,10 @@ input:checked + .toggle-slider::before {
   color: var(--text-secondary);
   font-size: 0.9rem;
   margin-bottom: 28px;
-}
+} */
 
 /* Master Banner */
-.notif-master-banner {
+/* .notif-master-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -105,10 +105,10 @@ input:checked + .toggle-slider::before {
   font-size: 0.82rem;
   opacity: 0.9;
   margin: 0;
-}
+} */
 
 /* Master toggle override to white */
-.notif-master-banner .toggle-slider {
+/* .notif-master-banner .toggle-slider {
   background: rgba(255,255,255,0.35);
 }
 
@@ -118,10 +118,10 @@ input:checked + .toggle-slider::before {
 
 .notif-master-banner input:checked + .toggle-slider::before {
   background: var(--accent);
-}
+} */
 
 /* Section card */
-.notif-section {
+/* .notif-section {
   border: 1px solid var(--border);
   border-radius: 14px;
   overflow: hidden;
@@ -159,10 +159,10 @@ input:checked + .toggle-slider::before {
   font-size: 0.78rem;
   color: var(--text-secondary);
   margin: 2px 0 0;
-}
+} */
 
 /* Individual row */
-.notif-row {
+/* .notif-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -212,10 +212,10 @@ input:checked + .toggle-slider::before {
   color: var(--text-secondary);
   margin: 0;
   line-height: 1.4;
-}
+} */
 
 /* Preview sample notification */
-.notif-preview-row {
+/* .notif-preview-row {
   padding: 18px 22px;
   border-top: 1px solid var(--border);
   background: var(--bg-secondary);
@@ -270,10 +270,10 @@ input:checked + .toggle-slider::before {
   font-size: 0.7rem;
   color: var(--text-secondary);
   opacity: 0.7;
-}
+} */
 
 /* Save button */
-.notif-save-btn {
+/* .notif-save-btn {
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -300,13 +300,13 @@ input:checked + .toggle-slider::before {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
-}
+} */
 
 /* ============================================================
    Toast Notification System
    ============================================================ */
 
-.toast-container {
+/* .toast-container {
   position: fixed;
   bottom: 24px;
   right: 24px;
@@ -418,12 +418,12 @@ input:checked + .toggle-slider::before {
 @keyframes toastProgress {
   from { width: 100%; }
   to   { width: 0%; }
-}
+} */
 
 /* ============================================================
    Notification Bell Badge (in header / account nav)
    ============================================================ */
-.notif-bell-badge {
+/* .notif-bell-badge {
   position: relative;
   display: inline-flex;
 }
@@ -443,10 +443,10 @@ input:checked + .toggle-slider::before {
 @keyframes pulseBadge {
   0%, 100% { transform: scale(1); }
   50%       { transform: scale(1.3); }
-}
+} */
 
 /* Responsive */
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
   .toast-container {
     bottom: 16px;
     right: 12px;
@@ -460,4 +460,4 @@ input:checked + .toggle-slider::before {
     flex-direction: column;
     align-items: flex-start;
   }
-}
+} */
