@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Heart, ShieldCheck,Share2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import BackButton from '../components/BackButton';
@@ -17,6 +17,7 @@ const ProductDetailScreen = () => {
   const [reviews, setReviews]=useState([]);
   const { toggleWishlist, isWishlisted } = useWishlist();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const navigate=useNavigate();
   
   useEffect(() => {
     fetchProduct();
@@ -55,6 +56,17 @@ const ProductDetailScreen = () => {
 
       setProduct(data);
   }
+
+  const handleBuyNow = () => {
+    navigate("/checkout", {
+      state: {
+        buyNowItem: {
+          ...product,
+          quantity: 1,
+        },
+      },
+    });
+  };
 
   // record product view (user count)
   const recordProductView = async (productId) => {
@@ -219,6 +231,9 @@ const ProductDetailScreen = () => {
             <div className="action-btns">
               <button className="add-to-cart-big" onClick={handleAddToCart}>
                 <ShoppingCart size={20} /> Add to Cart
+              </button>
+              <button className="buy-now-big" onClick={handleBuyNow}>
+                Buy Now
               </button>
               <button className="wishlist-btn" onClick={()=>toggleWishlist(product.id)}><Heart fill={isWishlisted(product.id) ? "red" : "none"} color={isWishlisted(product.id) ? "red" : "currentColor"} /></button>
             </div>
