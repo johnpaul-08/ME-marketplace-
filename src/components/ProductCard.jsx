@@ -66,7 +66,7 @@ const ProductCard = ({ product, showRemoveButton, onRemove }) => {
   };
 
   return (
-    <div className={`product-card${isOutOfStock ? ' out-of-stock-card' : ''}`} style={{ position: 'relative' }}>
+    <div className={`product-card${isOutOfStock ? ' out-of-stock-card' : ''}`}>
       {showRemoveButton && (
         <button 
           className="remove-wishlist-btn" 
@@ -75,45 +75,44 @@ const ProductCard = ({ product, showRemoveButton, onRemove }) => {
             e.stopPropagation();
             onRemove(product.id); 
           }}
-          style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10, background: 'white', border: '1px solid #ddd', borderRadius: '50%', padding: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10, background: 'white', border: 'none', borderRadius: '50%', padding: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}
         >
-          <X size={16} color="red" />
+          <X size={16} color="var(--me-maroon)" />
         </button>
       )}
+
       <Link to={`/product/${product.id}`} className="product-image">
         <img src={product.images?.[0] || 'https://placehold.co/300x400'} alt={product.name} />
+        
         {isOutOfStock
-          ? <span className="badge badge-out-of-stock">Out of Stock</span>
+          ? <span className="badge badge-out-of-stock">Sold Out</span>
           : product.discount && <span className="badge">-{product.discount}%</span>
         }
+        
         {isLowStock && (
           <span className="badge badge-low-stock">Only {stockCount} left!</span>
         )}
+        
+        {/* Sleek floating add to cart button */}
         {!isOutOfStock && (
-          <button className="add-to-cart-overlay" onClick={handleAddToCart}>
-            <ShoppingCart size={18} /> Add to Cart
+          <button className="add-to-cart-action" onClick={handleAddToCart} title="Add to Cart">
+            <ShoppingCart size={20} />
           </button>
         )}
       </Link>
 
       <div className="product-info">
-        <Link to={`/product/${product.id}`}>
-          <MoonRating rating={product.average_rating} count={product.rating_count} />
-          <h3 className="product-name">{product.name}</h3>
+        <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
           <p className="product-category">{product.category}</p>
+          <h3 className="product-name">{product.name}</h3>
+          <div className="rating-container">
+            <MoonRating rating={product.average_rating} count={product.rating_count} />
+          </div>
         </Link>
         <div className="product-price">
           <span className="current-price">₹{product.price}</span>
           {product.oldPrice && <span className="old-price">₹{product.oldPrice}</span>}
         </div>
-        <button
-          className="buy-now-btn"
-          onClick={handleBuyNow}
-          disabled={isOutOfStock}
-          style={isOutOfStock ? { opacity: 0.45, cursor: 'not-allowed' } : {}}
-        >
-          {isOutOfStock ? 'Unavailable' : 'Buy Now'}
-        </button>
       </div>
     </div>
   );
