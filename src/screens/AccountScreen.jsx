@@ -22,7 +22,7 @@ const AccountScreen = ({ user, onLogout }) => {
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState( searchParams.get("tab") || "orders");
+  const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "orders");
   const [addresses, setAddresses] = useState([]);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
   const [buyer, setBuyer] = useState(null);
@@ -33,7 +33,6 @@ const AccountScreen = ({ user, onLogout }) => {
     buyer?.name ||
     user?.email?.split("@")[0] ||
     "User";
-
   const avatarLetter = displayName.charAt(0).toUpperCase();
   const email = user?.email || "";
 
@@ -42,23 +41,25 @@ const AccountScreen = ({ user, onLogout }) => {
   // ── Data fetching ────────────────────────────────────────────────────────────
 
   const fetchBuyer = async () => {
-  if (!user?.id) return;
+    if (!user?.id) return;
 
-  const { data, error } = await supabase
-    .schema("marketplace_dataspace")
-    .from("buyers")
-    .select("*")
-    .eq("id", user.id)
-    .single();
+    const { data, error } = await supabase
+      .schema("marketplace_dataspace")
+      .from("buyers")
+      .select("*")
+      .eq("id", user.id)
+      .single();
 
-  if (!error) {
-    setBuyer(data);
-  }
+    if (!error) {
+      setBuyer(data);
+    }
   };
 
   const fetchAddresses = async () => {
-    if (!user?.id) return;
+    if (!email) return;
     setLoadingAddresses(true);
+
+    // Fetch addresses
     const { data } = await supabase
       .schema("marketplace_dataspace")
       .from("buyer_addresses")
@@ -66,32 +67,33 @@ const AccountScreen = ({ user, onLogout }) => {
       .eq("buyer_id", user.id)
       .order("is_default", { ascending: false })
       .order("created_at", { ascending: false });
+
     setAddresses(data || []);
     setLoadingAddresses(false);
   };
 
-        const fetchReviews = async () => {
-        if (!user?.id) return;
+  const fetchReviews = async () => {
+    if (!user?.id) return;
 
-        const { data, error } = await supabase
-          .schema("marketplace_dataspace")
-          .from("product_reviews")
-          .select("product_id, order_id")
-          .eq("buyer_id", user.id);
+    const { data, error } = await supabase
+      .schema("marketplace_dataspace")
+      .from("product_reviews")
+      .select("product_id, order_id")
+      .eq("buyer_id", user.id);
 
-        if (error) {
-          console.error(error);
-          return;
-        }
+    if (error) {
+      console.error(error);
+      return;
+    }
 
-        const map = {};
+    const map = {};
 
-        data.forEach((review) => {
-          map[`${review.order_id}-${review.product_id}`] = true;
-        });
+    data.forEach((review) => {
+      map[`${review.order_id}-${review.product_id}`] = true;
+    });
 
-        setReviewsMap(map);
-      };
+    setReviewsMap(map);
+  };
 
 
   useEffect(() => {
@@ -162,35 +164,52 @@ const AccountScreen = ({ user, onLogout }) => {
     fetchReviews();
   }, [user]);
 
-  // ── Address handlers ─────────────────────────────────────────────────────────
-
   const handleAddAddress = async (address) => {
+
+    // If this address is marked as default,
+    // remove default from all existing addresses first.
     if (address.is_default) {
       const { error: resetError } = await supabase
         .schema("marketplace_dataspace")
         .from("buyer_addresses")
         .update({ is_default: false })
         .eq("buyer_id", user.id);
-      if (resetError) { console.error(resetError); return; }
+
+      if (resetError) {
+        console.error(resetError);
+        return;
+      }
     }
 
     const { error } = await supabase
       .schema("marketplace_dataspace")
       .from("buyer_addresses")
-      .insert({ ...address, buyer_id: user.id });
-    if (error) { console.error(error); return; }
+      .insert({
+        ...address,
+        buyer_id: user.id,
+      });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
 
     fetchAddresses();
   };
 
   const handleEditAddress = async (id, updatedAddress) => {
+
     if (updatedAddress.is_default) {
       const { error: resetError } = await supabase
         .schema("marketplace_dataspace")
         .from("buyer_addresses")
         .update({ is_default: false })
         .eq("buyer_id", user.id);
-      if (resetError) { console.error(resetError); return; }
+
+      if (resetError) {
+        console.error(resetError);
+        return;
+      }
     }
 
     const { error } = await supabase
@@ -198,7 +217,11 @@ const AccountScreen = ({ user, onLogout }) => {
       .from("buyer_addresses")
       .update(updatedAddress)
       .eq("id", id);
-    if (error) { console.error(error); return; }
+
+    if (error) {
+      console.error(error);
+      return;
+    }
 
     fetchAddresses();
   };
@@ -209,27 +232,40 @@ const AccountScreen = ({ user, onLogout }) => {
       .from("buyer_addresses")
       .delete()
       .eq("id", id);
-    if (error) { console.error(error); return; }
 
-    fetchAddresses();
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    await fetchAddresses();
   };
 
   const handleSetDefaultAddress = async (address) => {
+    // Remove existing default
     const { error: resetError } = await supabase
       .schema("marketplace_dataspace")
       .from("buyer_addresses")
       .update({ is_default: false })
       .eq("buyer_id", user.id);
-    if (resetError) { console.error(resetError); return; }
 
+    if (resetError) {
+      console.error(resetError);
+      return;
+    }
+
+    // Set selected address as default
     const { error } = await supabase
       .schema("marketplace_dataspace")
       .from("buyer_addresses")
       .update({ is_default: true })
       .eq("id", address.id);
-    if (error) { console.error(error); return; }
 
-    fetchAddresses();
+    if (error) {
+      console.error(error);
+      return;
+    }
+    await fetchAddresses();
   };
 
   //___ review____________________________________________________________________
@@ -262,6 +298,7 @@ const AccountScreen = ({ user, onLogout }) => {
           <aside className="account-sidebar">
             <div className="user-profile-header">
               <div className="avatar-placeholder">{avatarLetter}</div>
+
               <div>
                 <h3>{displayName}</h3>
                 <p>{email}</p>
@@ -272,7 +309,7 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "notifications" ? "active" : ""}
-                onClick={() => { setActiveTab("notifications");  setSearchParams({ tab: "notifications" });}}
+                onClick={() => { setActiveTab("notifications"); setSearchParams({ tab: "notifications" }); }}
               >
                 <Bell size={18} />
                 Notifications
@@ -280,7 +317,7 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "orders" ? "active" : ""}
-                onClick={() => { setActiveTab("orders");  setSearchParams({ tab: "orders" });}}
+                onClick={() => { setActiveTab("orders"); setSearchParams({ tab: "orders" }); }}
               >
                 <Package size={18} />
                 My Orders
@@ -288,7 +325,7 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "wishlist" ? "active" : ""}
-                onClick={() => { setActiveTab("wishlist");  setSearchParams({ tab: "wishlist" });}}
+                onClick={() => { setActiveTab("wishlist"); setSearchParams({ tab: "wishlist" }); }}
               >
                 <Heart size={18} />
                 Wishlist
@@ -296,7 +333,7 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "addresses" ? "active" : ""}
-                onClick={() => { setActiveTab("addresses");  setSearchParams({ tab: "addresses" });}}
+                onClick={() => { setActiveTab("addresses"); setSearchParams({ tab: "addresses" }); }}
               >
                 <MapPin size={18} />
                 Addresses
@@ -304,7 +341,7 @@ const AccountScreen = ({ user, onLogout }) => {
 
               <button
                 className={activeTab === "settings" ? "active" : ""}
-                onClick={() => { setActiveTab("settings");  setSearchParams({ tab: "settings" });}}
+                onClick={() => { setActiveTab("settings"); setSearchParams({ tab: "settings" }); }}
               >
                 <Settings size={18} />
                 Settings
@@ -336,7 +373,8 @@ const AccountScreen = ({ user, onLogout }) => {
               />
             )}
 
-            {/* WISHLIST */}
+            {/* ================= WISHLIST ================= */}
+
             {activeTab === "wishlist" && (
               <WishlistTab
                 wishlist={wishlist}
@@ -344,7 +382,7 @@ const AccountScreen = ({ user, onLogout }) => {
               />
             )}
 
-            {/* ADDRESSES */}
+            {/* ================= ADDRESS ================= */}
             {activeTab === "addresses" && (
               <AddressTab
                 addresses={addresses}

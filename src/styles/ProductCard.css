@@ -1,46 +1,49 @@
 .product-card {
-  background: var(--bg-primary);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: var(--transition);
+  background: transparent;
+  border: none;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
-}
-
-.product-card:hover {
-  transform: translateY(-10px);
-  box-shadow: var(--shadow);
-  border-color: var(--accent);
+  position: relative;
+  transition: all 0.4s ease;
 }
 
 .product-image {
   position: relative;
-  height: 250px;
+  height: 320px;
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 10px 30px rgba(70, 23, 17, 0.05);
 }
 
 .product-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: var(--transition);
+  transition: transform 0.8s ease;
 }
 
 .product-card:hover .product-image img {
   transform: scale(1.05);
 }
 
+.product-card:hover .product-image {
+  box-shadow: 0 20px 40px rgba(70, 23, 17, 0.12);
+}
+
+/* Badges */
 .badge {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #ff4757;
+  top: 15px;
+  left: 15px;
+  background: var(--me-maroon);
   color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 50px;
   font-size: 0.75rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .badge-out-of-stock {
@@ -49,12 +52,12 @@
 
 .badge-low-stock {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background: #f59e0b;
+  bottom: 15px;
+  left: 15px;
+  background: var(--me-orange);
   color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 50px;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.3px;
@@ -66,96 +69,92 @@
   50%       { opacity: 0.7; }
 }
 
-.out-of-stock-card {
+.out-of-stock-card .product-image {
   opacity: 0.75;
-  filter: saturate(0.4);
+  filter: saturate(0.2);
 }
 
-.add-to-cart-overlay {
+/* Sleek Add to Cart interaction */
+.add-to-cart-action {
   position: absolute;
-  bottom: -50px;
-  left: 0;
-  width: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 12px;
+  bottom: 15px;
+  right: 15px;
+  background: #ffffff;
+  color: var(--me-maroon);
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  font-weight: 600;
-  transition: var(--transition);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: none;
 }
 
-.product-card:hover .add-to-cart-overlay {
-  bottom: 0;
+.product-card:hover .add-to-cart-action {
+  transform: translateY(0);
+  opacity: 1;
 }
 
+.add-to-cart-action:hover {
+  background: var(--me-maroon);
+  color: #fff;
+  transform: translateY(0) scale(1.1);
+}
+
+/* Info Section */
 .product-info {
-  padding: 20px;
-  flex-grow: 1;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
 }
 
-.rating {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 10px;
-}
-
-.rating span {
+.product-category {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: var(--me-orange);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin-bottom: 8px;
 }
 
 .product-name {
-  font-size: 1.1rem;
-  margin-bottom: 5px;
+  font-size: 1.3rem;
+  color: var(--me-maroon);
+  font-weight: 700;
+  margin-bottom: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color 0.3s ease;
 }
 
-.product-category {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-bottom: 15px;
+.product-card:hover .product-name {
+  color: var(--me-orange);
+}
+
+.rating-container {
+  margin-bottom: 12px;
 }
 
 .product-price {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
-  margin-top: auto;
+  align-items: baseline;
+  gap: 12px;
 }
 
 .current-price {
   font-weight: 700;
-  font-size: 1.25rem;
-  color: var(--text-primary);
+  font-size: 1.2rem;
+  color: var(--me-maroon);
 }
 
 .old-price {
   text-decoration: line-through;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-
-.buy-now-btn {
-  width: 100%;
-  border: 1.5px solid var(--text-primary);
-  padding: 10px;
-  border-radius: 6px;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-}
-
-.buy-now-btn:hover {
-  background: var(--text-primary);
-  color: var(--bg-primary);
+  color: #a0a0a0;
+  font-size: 0.95rem;
 }
