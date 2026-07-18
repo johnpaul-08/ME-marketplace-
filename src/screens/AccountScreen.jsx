@@ -275,7 +275,7 @@ const AccountScreen = ({ user, onLogout }) => {
                 onClick={() => { setActiveTab("notifications");  setSearchParams({ tab: "notifications" });}}
               >
                 <Bell size={18} />
-                Notification
+                Notifications
               </button>
 
               <button
