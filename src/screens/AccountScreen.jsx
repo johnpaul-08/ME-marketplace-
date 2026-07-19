@@ -286,6 +286,31 @@ const AccountScreen = ({ user, onLogout }) => {
     }
   }, [searchParams]);
 
+  const handleReviewSubmit = async ({
+      orderId,
+      productId,
+      buyerId,
+      rating,
+      comment,
+    }) => {
+      const { error } = await supabase
+        .schema("marketplace_dataspace")
+        .from("product_reviews")
+        .insert([
+          {
+            product_id: productId,
+            buyer_id: buyerId,
+            order_id: orderId,
+            rating,
+            comment,
+          },
+        ]);
+
+      if (error) {
+        throw error;
+      }
+  };
+
   // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
@@ -369,6 +394,7 @@ const AccountScreen = ({ user, onLogout }) => {
                 loadingOrders={loadingOrders}
                 user={user}
                 reviewsMap={reviewsMap}
+                onReviewSubmit={handleReviewSubmit}
                 onReviewSubmitted={handleReviewSubmitted}
               />
             )}

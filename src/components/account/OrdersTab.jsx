@@ -1,7 +1,7 @@
 import { ShoppingBag } from "lucide-react";
 import OrderCard from "./OrderCard";
 
-const OrdersTab = ({ orders, loadingOrders, user, reviewsMap, onReviewSubmitted, }) => {
+const OrdersTab = ({ orders, loadingOrders, user, reviewsMap, onReviewSubmit, onReviewSubmitted, }) => {
   return (
     <>
       <h2>My Orders</h2>
@@ -22,6 +22,7 @@ const OrdersTab = ({ orders, loadingOrders, user, reviewsMap, onReviewSubmitted,
               order={order}
               user={user}
               reviewsMap={reviewsMap}
+              onReviewSubmit={onReviewSubmit}
               onReviewSubmitted={onReviewSubmitted}
             />
           ))}
