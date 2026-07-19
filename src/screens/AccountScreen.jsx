@@ -311,6 +311,35 @@ const AccountScreen = ({ user, onLogout }) => {
       }
   };
 
+  //______settings________________________________________________________________
+
+  const handleProfileUpdate = async ({ name, email }) => {
+    const newName = name.trim();
+    const newEmail = email.trim();
+
+    // Update name in buyers table
+    const { error: nameError } = await supabase
+      .schema("marketplace_dataspace")
+      .from("buyers")
+      .update({ name: newName })
+      .eq("id", user.id);
+
+    if (nameError) {
+      throw nameError;
+    }
+
+    // Update email only if it changed
+    if (newEmail !== user.email) {
+      const { error: emailError } = await supabase.auth.updateUser({
+        email: newEmail,
+      });
+
+      if (emailError) {
+        throw emailError;
+      }
+    }
+  };
+
   // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
@@ -426,6 +455,7 @@ const AccountScreen = ({ user, onLogout }) => {
                 user={user}
                 buyer={buyer}
                 onProfileUpdated={fetchBuyer}
+                onProfileUpdate={handleProfileUpdate}
               />
             )}
 
