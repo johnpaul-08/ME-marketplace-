@@ -286,6 +286,60 @@ const AccountScreen = ({ user, onLogout }) => {
     }
   }, [searchParams]);
 
+  const handleReviewSubmit = async ({
+      orderId,
+      productId,
+      buyerId,
+      rating,
+      comment,
+    }) => {
+      const { error } = await supabase
+        .schema("marketplace_dataspace")
+        .from("product_reviews")
+        .insert([
+          {
+            product_id: productId,
+            buyer_id: buyerId,
+            order_id: orderId,
+            rating,
+            comment,
+          },
+        ]);
+
+      if (error) {
+        throw error;
+      }
+  };
+
+  //______settings________________________________________________________________
+
+  const handleProfileUpdate = async ({ name, email }) => {
+    const newName = name.trim();
+    const newEmail = email.trim();
+
+    // Update name in buyers table
+    const { error: nameError } = await supabase
+      .schema("marketplace_dataspace")
+      .from("buyers")
+      .update({ name: newName })
+      .eq("id", user.id);
+
+    if (nameError) {
+      throw nameError;
+    }
+
+    // Update email only if it changed
+    if (newEmail !== user.email) {
+      const { error: emailError } = await supabase.auth.updateUser({
+        email: newEmail,
+      });
+
+      if (emailError) {
+        throw emailError;
+      }
+    }
+  };
+
   // ── Render ───────────────────────────────────────────────────────────────────
 
   return (
@@ -312,7 +366,7 @@ const AccountScreen = ({ user, onLogout }) => {
                 onClick={() => { setActiveTab("notifications"); setSearchParams({ tab: "notifications" }); }}
               >
                 <Bell size={18} />
-                Notification
+                Notifications
               </button>
 
               <button
@@ -369,6 +423,7 @@ const AccountScreen = ({ user, onLogout }) => {
                 loadingOrders={loadingOrders}
                 user={user}
                 reviewsMap={reviewsMap}
+                onReviewSubmit={handleReviewSubmit}
                 onReviewSubmitted={handleReviewSubmitted}
               />
             )}
@@ -400,6 +455,7 @@ const AccountScreen = ({ user, onLogout }) => {
                 user={user}
                 buyer={buyer}
                 onProfileUpdated={fetchBuyer}
+                onProfileUpdate={handleProfileUpdate}
               />
             )}
 

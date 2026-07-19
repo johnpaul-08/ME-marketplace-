@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../../supabase";
 import "../../styles/SettingsTab.css";
 
 const SettingsTab = ({ user, buyer, onProfileUpdated }) => {
@@ -20,47 +19,22 @@ const SettingsTab = ({ user, buyer, onProfileUpdated }) => {
   const handleSave = async () => {
     setLoading(true);
 
-    const newName = name.trim();
-    const newEmail = email.trim();
+    try {
+      await onProfileUpdate({
+        name,
+        email,
+      });
 
-    const { error: nameError } = await supabase
-      .schema("marketplace_dataspace")
-      .from("buyers")
-      .update({ name: newName })
-      .eq("id", user.id);
+      await onProfileUpdated();
 
-    let emailError = null;
+      setEditing(false);
+    } catch (err) {
+      console.error("Profile update error:", err);
 
-    if (newEmail !== user.email) {
- const { data, error } = await supabase.auth.updateUser({
-  email: newEmail,
-});
-
-console.log("Update User Data:", data);
-console.log("Update User Error:", error);
-
-emailError = error;
+      alert(err.message || "Failed to update profile.");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
-
-    if (nameError || emailError) {
-      console.error("Name Error:", nameError);
-      console.error("Email Error:", emailError);
-
-      alert(
-        nameError?.message ||
-        emailError?.message ||
-        "Failed to update profile."
-      );
-
-      return;
-    }
-
-    onProfileUpdated();
-    setEditing(false);
-
-    
   };
   
 

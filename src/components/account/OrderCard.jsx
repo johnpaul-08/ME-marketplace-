@@ -3,7 +3,7 @@ import { CreditCard, Truck, AlertOctagon } from "lucide-react";
 import ReportModal from "./ReportModal";
 import ReviewModal from "./ReviewModal";
 
-const OrderCard = ({ order, user, reviewsMap, onReviewSubmitted }) => {
+const OrderCard = ({ order, user, reviewsMap,onReviewSubmit, onReviewSubmitted }) => {
   const [reportModalOpen, setReportModalOpen] = useState(false);
   const [selectedItemToReport, setSelectedItemToReport] = useState(null);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -182,6 +182,7 @@ const handleReviewClick = (item) => {
           order={order}
           item={selectedItemToReview}
           user={user}
+          onReviewSubmit={onReviewSubmit}
           onReviewSubmitted={() =>
             onReviewSubmitted(order.id, selectedItemToReview.id)
           }

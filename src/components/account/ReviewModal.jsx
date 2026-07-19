@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { X, Star, Loader } from "lucide-react";
-import { supabase } from "../../supabase";
 import "../../styles/ReviewModal.css";
 
-const ReviewModal = ({ isOpen, onClose, order, item, user }) => {
+const ReviewModal = ({ isOpen, onClose, order, item, user, onReviewSubmit, onReviewSubmitted }) => {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -44,22 +43,18 @@ const ReviewModal = ({ isOpen, onClose, order, item, user }) => {
     setError("");
 
     try {
-      const { error: insertError } = await supabase
-        .schema("marketplace_dataspace")
-        .from("product_reviews")
-        .insert([
-          {
-            product_id: item.id,
-            buyer_id: user.id,
-            order_id: order.id,
-            rating,
-            comment,
-          },
-        ]);
-
-      if (insertError) throw insertError;
+      await onReviewSubmit({
+        orderId: order.id,
+        productId: item.id,
+        buyerId: user.id,
+        rating,
+        comment: comment.trim(),
+      });
 
       setSuccess(true);
+
+      // Update reviewsMap in AccountScreen
+      onReviewSubmitted?.();
 
       setTimeout(() => {
         handleClose();
@@ -71,6 +66,7 @@ const ReviewModal = ({ isOpen, onClose, order, item, user }) => {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="review-modal-overlay">
